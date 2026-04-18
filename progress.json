@@ -1,0 +1,9 @@
+[
+    {
+        "student_id": 2,
+        "course_id": 2,
+        "completed_lessons": [
+            1
+        ]
+    }
+]

@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "title": "SQL",
+        "teacher_id": 1,
+        "lessons": [
+            {
+                "lesson_id": 1,
+                "title": "Rappel",
+                "content": "rappel rappel rappel rappel"
+            }
+        ],
+        "enrolled_students": []
+    },
+    {
+        "id": 2,
+        "title": "Python",
+        "teacher_id": 1,
+        "lessons": [
+            {
+                "lesson_id": 1,
+                "title": "Chapitre 1",
+                "content": "syntaxe beginner liste"
+            }
+        ],
+        "enrolled_students": [
+            2
+        ]
+    }
+]

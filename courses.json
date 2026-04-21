@@ -1,30 +1,68 @@
 [
-    {
-        "id": 1,
-        "title": "SQL",
-        "teacher_id": 1,
-        "lessons": [
-            {
-                "lesson_id": 1,
-                "title": "Rappel",
-                "content": "rappel rappel rappel rappel"
-            }
-        ],
-        "enrolled_students": []
-    },
-    {
-        "id": 2,
-        "title": "Python",
-        "teacher_id": 1,
-        "lessons": [
-            {
-                "lesson_id": 1,
-                "title": "Chapitre 1",
-                "content": "syntaxe beginner liste"
-            }
-        ],
-        "enrolled_students": [
-            2
+  {
+    "id": 1,
+    "title": "SQL",
+    "teacher_id": 1,
+    "lessons": [
+      {
+        "lesson_id": 1,
+        "title": "Rappel",
+        "content": "rappel rappel rappel rappel"
+      }
+    ],
+    "quizzes": [
+      {
+        "quiz_id": 1,
+        "title": "Quiz SQL Basics",
+        "questions": [
+          {
+            "question": "What does SQL stand for?",
+            "options": [
+              "Structured Query Language",
+              "Simple Query Language",
+              "Standard Query Language"
+            ],
+            "correct_answer": 0
+          },
+          {
+            "question": "Which command is used to retrieve data from a database?",
+            "options": ["INSERT", "UPDATE", "SELECT"],
+            "correct_answer": 2
+          }
         ]
-    }
+      }
+    ],
+    "enrolled_students": []
+  },
+  {
+    "id": 2,
+    "title": "Python",
+    "teacher_id": 1,
+    "lessons": [
+      {
+        "lesson_id": 1,
+        "title": "Chapitre 1",
+        "content": "syntaxe beginner liste"
+      }
+    ],
+    "quizzes": [
+      {
+        "quiz_id": 1,
+        "title": "Python Basics Quiz",
+        "questions": [
+          {
+            "question": "What is the output of print(2 + 3)?",
+            "options": ["5", "23", "Error"],
+            "correct_answer": 0
+          },
+          {
+            "question": "Which data type is used for text in Python?",
+            "options": ["int", "str", "float"],
+            "correct_answer": 1
+          }
+        ]
+      }
+    ],
+    "enrolled_students": [2]
+  }
 ]

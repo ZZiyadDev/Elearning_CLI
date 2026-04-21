@@ -19,6 +19,34 @@ def get_next_id(data_list):
         return 1
     return max(item.get('id', 0) for item in data_list) + 1
 
+# Validation functions
+def validate_username(username):
+    if not username or not isinstance(username, str):
+        return False, "Nom d'utilisateur requis."
+    if len(username) < 3 or len(username) > 20:
+        return False, "Le nom d'utilisateur doit contenir entre 3 et 20 caractères."
+    if not username.replace('_', '').replace('-', '').isalnum():
+        return False, "Le nom d'utilisateur ne peut contenir que des lettres, chiffres, _ et -."
+    return True, ""
+
+def validate_password(password):
+    if not password or len(password) < 6:
+        return False, "Le mot de passe doit contenir au moins 6 caractères."
+    return True, ""
+
+def validate_choice(choice, valid_options):
+    if choice not in valid_options:
+        return False, f"Choix invalide. Options valides: {', '.join(valid_options)}"
+    return True, ""
+
+def get_valid_input(prompt, validator_func, *args):
+    while True:
+        user_input = input(prompt).strip()
+        valid, message = validator_func(user_input, *args)
+        if valid:
+            return user_input
+        print(f"Erreur: {message}")
+
 # Specific helpers
 
 def load_users():

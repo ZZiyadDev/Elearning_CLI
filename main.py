@@ -1,32 +1,42 @@
 from authentification import login, register
 from enseignant import menu_enseignant
 from etudiant import menu_etudiant
+from admin import menu_admin
 
 def main():
     while True:
-        print("\n=== Application E-Learning ===")
-        print("1. Se connecter")
-        print("2. S'inscrire")
-        print("3. Quitter")
-        
-        choix = input("Votre choix : ")
-        
-        if choix == '1':
-            user = login()
-            if user:
-                if user['role'] == 'enseignant':
-                    menu_enseignant(user)
-                elif user['role'] == 'etudiant':
-                    menu_etudiant(user)
-                else:
-                    print(f"Rôle non reconnu: {user['role']}")
-        elif choix == '2':
-            register()
-        elif choix == '3':
-            print("Au revoir !")
+        try:
+            print("\n=== Application E-Learning ===")
+            print("1. Se connecter")
+            print("2. S'inscrire")
+            print("3. Quitter")
+            
+            choix = input("Votre choix : ")
+            
+            if choix == '1':
+                user = login()
+                if user:
+                    if user['role'] == 'enseignant':
+                        menu_enseignant(user)
+                    elif user['role'] == 'etudiant':
+                        menu_etudiant(user)
+                    elif user['role'] == 'admin':
+                        menu_admin(user)
+                    else:
+                        print(f"Rôle non reconnu: {user['role']}")
+            elif choix == '2':
+                register()
+            elif choix == '3':
+                print("Au revoir !")
+                break
+            else:
+                print("Choix invalide.")
+        except KeyboardInterrupt:
+            print("\n\nInterruption détectée. Au revoir !")
             break
-        else:
-            print("Choix invalide.")
+        except Exception as e:
+            print(f"Une erreur inattendue s'est produite: {e}")
+            print("Veuillez réessayer.")
 
 if __name__ == "__main__":
     main()

@@ -2,13 +2,13 @@
     {
         "id": 1,
         "username": "Ibtissam",
-        "password": "666",
+        "password": "c7e616822f366fb1b5e0756af498cc11d2c0862edcb32ca65882f622ff39de1b",
         "role": "enseignant"
     },
     {
         "id": 2,
         "username": "Mohammed",
-        "password": "123",
+        "password": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
         "role": "etudiant"
     }
 ]

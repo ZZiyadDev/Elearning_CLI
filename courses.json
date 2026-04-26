@@ -10,7 +10,9 @@
                 "content": "rappel rappel rappel rappel"
             }
         ],
-        "enrolled_students": []
+        "enrolled_students": [
+            5
+        ]
     },
     {
         "id": 2,

@@ -122,7 +122,7 @@ def gerer_eleves(user):
         for student_id in c['enrolled_students']:
             # Find student details
             student = next((u for u in users if u['id'] == student_id), None)
-            student_name = student['username'] if student else f"Utilisateur inconnu ({student_id})"
+            student_name = student['nom'] if student else f"Utilisateur inconnu ({student_id})"
             
             # Find progress
             prog = next((p for p in progress_data if p['student_id'] == student_id and p['course_id'] == c['id']), None)

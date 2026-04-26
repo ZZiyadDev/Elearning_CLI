@@ -1,14 +1,42 @@
 [
     {
         "id": 1,
+        "nom": "Administrateur Principal",
+        "email": "admin@elearning.com",
+        "username": "admin",
+        "password": "admin123",
+        "role": "administrateur"
+    },
+    {
+        "id": 2,
+        "nom": "Ibtissam Bennani",
+        "email": "ibtissam@elearning.com",
         "username": "Ibtissam",
         "password": "666",
         "role": "enseignant"
     },
     {
-        "id": 2,
+        "id": 3,
+        "nom": "Mohammed Alaoui",
+        "email": "mohammed@elearning.com",
         "username": "Mohammed",
         "password": "123",
+        "role": "etudiant"
+    },
+    {
+        "id": 4,
+        "nom": "Hassan Achmaoui",
+        "email": "hassan@elearning.com",
+        "username": "hassan",
+        "password": "pass123",
+        "role": "etudiant"
+    },
+    {
+        "id": 5,
+        "nom": "ziyad",
+        "email": "ziyad.zerrari@gmail.com",
+        "username": "ziyad",
+        "password": "ziyad",
         "role": "etudiant"
     }
 ]

@@ -5,5 +5,12 @@
         "completed_lessons": [
             1
         ]
+    },
+    {
+        "student_id": 5,
+        "course_id": 1,
+        "completed_lessons": [
+            1
+        ]
     }
 ]

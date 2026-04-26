@@ -1,4 +1,5 @@
 from authentification import login, register
+from admin import menu_admin
 from enseignant import menu_enseignant
 from etudiant import menu_etudiant
 
@@ -14,19 +15,21 @@ def main():
         if choix == '1':
             user = login()
             if user:
-                if user['role'] == 'enseignant':
+                if user['role'] == 'administrateur':
+                    menu_admin(user)
+                elif user['role'] == 'enseignant':
                     menu_enseignant(user)
                 elif user['role'] == 'etudiant':
                     menu_etudiant(user)
                 else:
-                    print(f"Rôle non reconnu: {user['role']}")
+                    print(f"❌ Rôle non reconnu: {user['role']}")
         elif choix == '2':
             register()
         elif choix == '3':
             print("Au revoir !")
             break
         else:
-            print("Choix invalide.")
+            print("❌ Choix invalide.")
 
 if __name__ == "__main__":
     main()

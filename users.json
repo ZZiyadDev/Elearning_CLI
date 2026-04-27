@@ -4,15 +4,15 @@
         "nom": "Administrateur Principal",
         "email": "admin@elearning.com",
         "username": "admin",
-        "password": "admin123",
-        "role": "administrateur"
+        "password": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f1979c17f",
+        "role": "admin"
     },
     {
         "id": 2,
         "nom": "Ibtissam Bennani",
         "email": "ibtissam@elearning.com",
         "username": "Ibtissam",
-        "password": "666",
+        "password": "c7e616822f366fb1b5e0756af498cc11d2c0862edcb32ca65882f622ff39de1b",
         "role": "enseignant"
     },
     {
@@ -20,7 +20,7 @@
         "nom": "Mohammed Alaoui",
         "email": "mohammed@elearning.com",
         "username": "Mohammed",
-        "password": "123",
+        "password": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
         "role": "etudiant"
     },
     {
@@ -28,7 +28,7 @@
         "nom": "Hassan Achmaoui",
         "email": "hassan@elearning.com",
         "username": "hassan",
-        "password": "pass123",
+        "password": "109f4b3c50d7b0df729d299bc6f8e9ef9066971f682f1540522413104e93e57e",
         "role": "etudiant"
     },
     {
@@ -36,7 +36,31 @@
         "nom": "ziyad",
         "email": "ziyad.zerrari@gmail.com",
         "username": "ziyad",
-        "password": "ziyad",
+        "password": "8f111d0c23f162a25e6d0e67dda71a87cb6a8c46b405afa33d9a19c29ab67d1f",
+        "role": "etudiant"
+    },
+    {
+        "id": 6,
+        "nom": "ziyad",
+        "email": "ziyad.learning@gmail.com",
+        "username": "123",
+        "password": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+        "role": "etudiant"
+    },
+    {
+        "id": 7,
+        "nom": "Admin Test",
+        "email": "admin@test.com",
+        "username": "admintest",
+        "password": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+        "role": "enseignant"
+    },
+    {
+        "id": 8,
+        "nom": "test",
+        "email": "test",
+        "username": "test",
+        "password": "ecd71870d1963316a97e3ac3408c9835ad8cf0f3c1bc703527c30265534f75ae",
         "role": "etudiant"
     }
 ]

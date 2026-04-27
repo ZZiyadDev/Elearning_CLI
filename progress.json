@@ -12,5 +12,13 @@
         "completed_lessons": [
             1
         ]
+    },
+    {
+        "student_id": 6,
+        "course_id": 2,
+        "completed_lessons": [
+            1
+        ],
+        "quiz_scores": {}
     }
 ]

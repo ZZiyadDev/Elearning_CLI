@@ -1,4 +1,8 @@
-from data import load_users, save_users, get_next_id
+from data import load_users, save_users, get_next_id, load_courses, save_courses, load_progress
+import hashlib
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
 
 def menu_admin(user):
     """Admin menu with CRUD operations for users"""
@@ -9,7 +13,8 @@ def menu_admin(user):
         print("3. Modifier les informations d'un utilisateur")
         print("4. Consulter la liste des utilisateurs")
         print("5. Rechercher un utilisateur")
-        print("6. Déconnexion")
+        print("6. Voir les statistiques")
+        print("7. Déconnexion")
         
         choix = input("Votre choix : ")
         
@@ -24,6 +29,8 @@ def menu_admin(user):
         elif choix == '5':
             rechercher_utilisateur()
         elif choix == '6':
+            voir_statistiques()
+        elif choix == '7':
             print("Déconnexion réussie. À bientôt !")
             break
         else:
@@ -51,14 +58,14 @@ def ajouter_utilisateur():
         return
     
     print("\nChoisissez le rôle :") 
-    print("1. Administrateur")
+    print("1. Admin")
     print("2. Enseignant")
     print("3. Etudiant")
     
     choix = input("Votre choix (1, 2 ou 3) : ")
     
     if choix == '1':
-        role = 'administrateur'
+        role = 'admin'
     elif choix == '2':
         role = 'enseignant'
     elif choix == '3':
@@ -72,8 +79,8 @@ def ajouter_utilisateur():
         "nom": nom,
         "email": email,
         "username": username,
-        "password": password,
-        "role": role
+        "password": hash_password(password),
+        "role": role,
     }
     
     users.append(new_user)
@@ -157,21 +164,21 @@ def modifier_utilisateur():
                     user_to_modify['email'] = nouveau_email
             
             # Modify password
-            nouveau_password = input(f"Mot de passe (actuel: {'*' * len(user_to_modify['password'])}) : ")
+            nouveau_password = input(f"Mot de passe (laisser vide pour garder l'actuel) : ")
             if nouveau_password.strip():
-                user_to_modify['password'] = nouveau_password
+                user_to_modify['password'] = hash_password(nouveau_password)
             
             # Modify role
             print(f"Rôle actuel: {user_to_modify['role']}")
-            print("Modifier le rôle ? (o/n) : ")
-            if input().lower() == 'o':
-                print("1. Administrateur")
+            modifier_role = input("Modifier le rôle ? (o/n) : ")
+            if modifier_role.lower() == 'o':
+                print("1. Admin")
                 print("2. Enseignant")
                 print("3. Etudiant")
                 role_choix = input("Nouveau rôle (1, 2 ou 3) : ")
                 
                 if role_choix == '1':
-                    user_to_modify['role'] = 'administrateur'
+                    user_to_modify['role'] = 'admin'
                 elif role_choix == '2':
                     user_to_modify['role'] = 'enseignant'
                 elif role_choix == '3':
@@ -235,13 +242,13 @@ def rechercher_utilisateur():
             return
     
     elif choix == '4':
-        print("1. Administrateur")
+        print("1. Admin")
         print("2. Enseignant")
         print("3. Etudiant")
         role_choix = input("Choisissez le rôle : ")
         
         if role_choix == '1':
-            role = 'administrateur'
+            role = 'admin'
         elif role_choix == '2':
             role = 'enseignant'
         elif role_choix == '3':
@@ -262,3 +269,64 @@ def rechercher_utilisateur():
             print(f"ID: {u['id']} | Nom: {u['nom']} | Email: {u['email']} | Rôle: {u['role']}")
     else:
         print("❌ Aucun résultat trouvé.")
+
+def voir_statistiques():
+    """View system statistics"""
+    print("\n--- Statistiques du système ---")
+    
+    users = load_users()
+    courses = load_courses()
+    progress_data = load_progress()
+    
+    # Count users by role
+    admin_count = len([u for u in users if u['role'] == 'admin'])
+    teacher_count = len([u for u in users if u['role'] == 'enseignant'])
+    student_count = len([u for u in users if u['role'] == 'etudiant'])
+    
+    print(f"\n📊 UTILISATEURS:")
+    print(f"  Administrateurs: {admin_count}")
+    print(f"  Enseignants: {teacher_count}")
+    print(f"  Étudiants: {student_count}")
+    print(f"  Total: {len(users)}")
+    
+    print(f"\n📚 COURS:")
+    print(f"  Nombre total de cours: {len(courses)}")
+    
+    if courses:
+        total_lessons = sum(len(c.get('lessons', [])) for c in courses)
+        total_quizzes = sum(len(c.get('quizzes', [])) for c in courses)
+        total_enrolled = sum(len(c.get('enrolled_students', [])) for c in courses)
+        avg_enrolled = total_enrolled / len(courses) if courses else 0
+        
+        print(f"  Nombre total de leçons: {total_lessons}")
+        print(f"  Nombre total de quiz: {total_quizzes}")
+        print(f"  Inscriptions totales: {total_enrolled}")
+        print(f"  Moyenne d'élèves par cours: {avg_enrolled:.1f}")
+    
+    print(f"\n📈 PROGRESSION:")
+    if progress_data:
+        completed_lessons_total = sum(len(p.get('completed_lessons', [])) for p in progress_data)
+        students_active = len(set(p['student_id'] for p in progress_data))
+        courses_active = len(set(p['course_id'] for p in progress_data))
+        
+        print(f"  Leçons complétées au total: {completed_lessons_total}")
+        print(f"  Étudiants actifs: {students_active}")
+        print(f"  Cours en cours: {courses_active}")
+        
+        # Calculate average completion rate
+        if progress_data:
+            completion_rates = []
+            for prog in progress_data:
+                course = next((c for c in courses if c['id'] == prog['course_id']), None)
+                if course and course.get('lessons'):
+                    rate = len(prog.get('completed_lessons', [])) / len(course['lessons']) * 100
+                    completion_rates.append(rate)
+            
+            if completion_rates:
+                avg_completion = sum(completion_rates) / len(completion_rates)
+                print(f"  Taux de progression moyen: {avg_completion:.1f}%")
+    else:
+        print("  Aucune progression enregistrée.")
+    
+    print(f"\nProgression:")
+    print(f"  Enregistrements de progression: {len(progress_data)}")

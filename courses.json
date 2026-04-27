@@ -26,7 +26,47 @@
             }
         ],
         "enrolled_students": [
-            2
+            2,
+            6
         ]
+    },
+    {
+        "id": 3,
+        "title": "Python Basics",
+        "teacher_id": 7,
+        "lessons": [
+            {
+                "lesson_id": 1,
+                "title": "Introduction to Python",
+                "content": "Python is a high-level programming language"
+            }
+        ],
+        "enrolled_students": [],
+        "quizzes": [
+            {
+                "quiz_id": 1,
+                "title": "Python Fundamentals Quiz",
+                "questions": [
+                    {
+                        "question": "What does print() do?",
+                        "options": [
+                            "Displays text output",
+                            "Creates variables",
+                            "Loads data",
+                            "Deletes files"
+                        ],
+                        "correct_answer": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "title": "7",
+        "teacher_id": 7,
+        "lessons": [],
+        "enrolled_students": [],
+        "quizzes": []
     }
 ]

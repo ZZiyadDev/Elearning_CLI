@@ -1,4 +1,8 @@
-from data import load_users, save_users, get_next_id
+import hashlib
+from data import load_users, save_users, get_next_id, validate_username, validate_password, get_valid_input
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
 
 def login():
     """Login with maximum 3 attempts"""
@@ -9,10 +13,11 @@ def login():
         print(f"\n--- Connexion (Tentative {attempts + 1}/{max_attempts}) ---")
         username = input("Nom d'utilisateur : ")
         password = input("Mot de passe : ")
+        hashed_password = hash_password(password)
 
         users = load_users()
         for user in users:
-            if user['username'] == username and user['password'] == password:
+            if user['username'] == username and user['password'] == hashed_password:
                 print(f"\nBienvenue {user['nom']} ! (Rôle: {user['role']})")
                 return user
         
@@ -30,7 +35,7 @@ def register():
     print("\n--- Inscription ---")
     nom = input("Nom complet : ")
     email = input("Email : ")
-    username = input("Nom d'utilisateur : ")
+    username = get_valid_input("Nom d'utilisateur : ", validate_username)
     
     users = load_users()
     if any(u['username'] == username for u in users):
@@ -41,7 +46,7 @@ def register():
         print("Cet email est déjà associé à un compte.")
         return None
         
-    password = input("Mot de passe : ")
+    password = get_valid_input("Mot de passe : ", validate_password)
     
     print("\nChoisissez votre rôle :")
     print("1. Enseignant")
@@ -61,7 +66,7 @@ def register():
         "nom": nom,
         "email": email,
         "username": username,
-        "password": password,
+        "password": hash_password(password),
         "role": role
     }
     
@@ -69,3 +74,24 @@ def register():
     save_users(users)
     print("\nInscription réussie ! Vous pouvez maintenant vous connecter.")
     return None
+
+def change_password(user):
+    print("\n--- Changer le mot de passe ---")
+    current_password = input("Mot de passe actuel : ")
+    if hash_password(current_password) != user['password']:
+        print("Mot de passe actuel incorrect.")
+        return
+    
+    new_password = get_valid_input("Nouveau mot de passe : ", validate_password)
+    confirm_password = input("Confirmer le nouveau mot de passe : ")
+    if new_password != confirm_password:
+        print("Les mots de passe ne correspondent pas.")
+        return
+    
+    users = load_users()
+    for u in users:
+        if u['id'] == user['id']:
+            u['password'] = hash_password(new_password)
+            break
+    save_users(users)
+    print("Mot de passe changé avec succès !")

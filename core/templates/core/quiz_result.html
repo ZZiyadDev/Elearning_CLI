@@ -1,0 +1,34 @@
+{% extends 'core/base.html' %}
+{% block title %}Résultat - {{ quiz.title }}{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto text-center py-20">
+    <div class="bg-white rounded-3xl p-12 border border-gray-100 shadow-xl">
+        <div class="mb-10 inline-flex items-center justify-center w-24 h-24 rounded-full {% if score == total %}bg-green-100 text-green-600{% else %}bg-red-100 text-red-600{% endif %}">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {% if score == total %}
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                {% else %}
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                {% endif %}
+            </svg>
+        </div>
+        
+        <h1 class="text-4xl font-black text-gray-900 tracking-tight mb-4">Quiz Terminé !</h1>
+        <p class="text-gray-500 font-medium mb-10">Félicitations pour avoir complété le quiz : <br><span class="text-gray-900 font-bold">{{ quiz.title }}</span></p>
+        
+        <div class="bg-gray-50 rounded-3xl p-8 mb-12">
+            <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Votre score</p>
+            <p class="text-6xl font-black text-red-600 tracking-tighter">{{ score }} <span class="text-2xl text-gray-300 font-bold">/ {{ total }}</span></p>
+        </div>
+        
+        <div class="flex flex-col space-y-4">
+            <a href="{% url 'course_detail' course.pk %}" class="bg-red-600 text-white px-10 py-4 rounded-full text-lg font-black hover:bg-red-700 transition-all shadow-lg">
+                Retour au cours
+            </a>
+            <a href="{% url 'dashboard' %}" class="text-gray-500 font-bold hover:text-red-600 transition-colors">
+                Aller au tableau de bord
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

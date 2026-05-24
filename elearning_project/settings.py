@@ -55,7 +55,10 @@ ROOT_URLCONF = 'elearning_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'elearning_project' / 'templates',
+            BASE_DIR / 'core' / 'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -66,6 +69,8 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTH_USER_MODEL = 'core.Utilisateur'
 
 WSGI_APPLICATION = 'elearning_project.wsgi.application'
 
@@ -116,3 +121,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'

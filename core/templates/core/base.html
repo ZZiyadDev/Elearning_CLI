@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}E-Learning{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body class="bg-gray-50 min-h-screen text-gray-900 font-sans">
+    <nav class="bg-white border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <a href="{% url 'home' %}" class="text-2xl font-black tracking-tighter text-red-600">E-LEARNING</a>
+                <div class="flex items-center space-x-6">
+                    {% if user.is_authenticated %}
+                        <div class="hidden md:flex flex-col items-end">
+                            <span class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ user.get_role_display }}</span>
+                            <span class="text-sm font-medium text-gray-700">{{ user.nom }}</span>
+                        </div>
+                        <a href="{% url 'dashboard' %}" class="text-sm font-semibold text-gray-600 hover:text-red-600 transition-colors">Tableau de bord</a>
+                        <a href="{% url 'logout' %}" class="text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">Déconnexion</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-sm font-semibold text-gray-600 hover:text-red-600 transition-colors">Connexion</a>
+                        <a href="{% url 'register' %}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-bold rounded-full text-white bg-red-600 hover:bg-red-700 transition-all shadow-sm">
+                            Inscription
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-white border-t border-gray-100 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <div class="text-xl font-black tracking-tighter text-red-600">E-LEARNING</div>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">© 2026 Tous droits réservés.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-xs font-bold text-gray-400 hover:text-red-600 uppercase tracking-widest transition-colors">Confidentialité</a>
+                    <a href="#" class="text-xs font-bold text-gray-400 hover:text-red-600 uppercase tracking-widest transition-colors">Conditions</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

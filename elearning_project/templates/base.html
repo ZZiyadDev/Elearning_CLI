@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}E-Learning{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16 items-center">
+                <a href="/" class="text-xl font-bold text-indigo-600">E-Learning</a>
+                <div class="space-x-4">
+                    {% if user.is_authenticated %}
+                        <span class="text-gray-600">{{ user.username }}</span>
+                        <a href="{% url 'logout' %}" class="text-gray-600 hover:text-indigo-600">Déconnexion</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-gray-600 hover:text-indigo-600">Connexion</a>
+                        <a href="{% url 'register' %}" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Inscription</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

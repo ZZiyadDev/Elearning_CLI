@@ -1,0 +1,43 @@
+{% extends 'core/base.html' %}
+{% block title %}Tableau de bord - Admin{% endblock %}
+{% block content %}
+<div class="mb-12">
+    <h1 class="text-4xl font-black text-gray-900 tracking-tight">Console d'administration</h1>
+    <p class="text-gray-500 mt-2 font-medium">Vue d'ensemble de la plateforme.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+    <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-all">
+        <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Utilisateurs</p>
+        <p class="text-5xl font-black text-red-600 tracking-tighter">{{ stats.total_users }}</p>
+    </div>
+    <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-all">
+        <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Étudiants</p>
+        <p class="text-5xl font-black text-gray-900 tracking-tighter">{{ stats.total_etudiants }}</p>
+    </div>
+    <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-all">
+        <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Enseignants</p>
+        <p class="text-5xl font-black text-gray-900 tracking-tighter">{{ stats.total_enseignants }}</p>
+    </div>
+    <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-all">
+        <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Cours</p>
+        <p class="text-5xl font-black text-gray-900 tracking-tighter">{{ stats.total_courses }}</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <section class="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm">
+        <h2 class="text-xl font-black text-gray-900 mb-8 tracking-tight">Actions rapides</h2>
+        <div class="grid grid-cols-1 gap-4">
+            <a href="#" class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-red-50 hover:text-red-600 transition-all group">
+                <span class="font-bold">Gérer les utilisateurs</span>
+                <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+            <a href="{% url 'course_list' %}" class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-red-50 hover:text-red-600 transition-all group">
+                <span class="font-bold">Modérer les cours</span>
+                <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}

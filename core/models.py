@@ -1,19 +1,19 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-class Utilisateur(models.Model):
+
+class Utilisateur(AbstractUser):
     ROLE_CHOICES = (
         ('admin', 'Admin'),
         ('enseignant', 'Enseignant'),
         ('etudiant', 'Etudiant'),
     )
     nom = models.CharField(max_length=255)
-    email = models.EmailField()
-    username = models.CharField(max_length=150)
-    password = models.CharField(max_length=255)
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='etudiant')
 
     def __str__(self):
         return f"{self.nom} ({self.username})"
+
 
 class Course(models.Model):
     title = models.CharField(max_length=255)
@@ -22,6 +22,7 @@ class Course(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
@@ -32,6 +33,7 @@ class Lesson(models.Model):
     def __str__(self):
         return f"{self.course.title} - {self.title}"
 
+
 class Quiz(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='quizzes')
     quiz_id = models.IntegerField()
@@ -39,6 +41,7 @@ class Quiz(models.Model):
 
     def __str__(self):
         return f"{self.course.title} - {self.title}"
+
 
 class Question(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='questions')
@@ -48,6 +51,7 @@ class Question(models.Model):
 
     def __str__(self):
         return self.question
+
 
 class Progress(models.Model):
     student = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, related_name='progress_records')

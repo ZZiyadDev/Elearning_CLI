@@ -1,0 +1,429 @@
+\documentclass[12pt,a4paper]{article}
+
+% -- Encodage et langue --
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+% -- Mise en page --
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{fontawesome5}
+
+% -- Couleur EMSI --
+\definecolor{EMSIGreen}{RGB}{0,130,60}
+
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Rapport -- Plateforme Elearning\_CLI}
+\lhead{Documentation Technique}
+\cfoot{\thepage}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    language=Python,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+}
+
+\begin{document}
+
+% ============================================================
+%  PAGE DE TITRE
+% ============================================================
+\begin{titlepage}
+\thispagestyle{empty}
+% --- Bande verticale gauche + filet blanc ---
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[EMSIGreen] (current page.north west)
+      rectangle ([xshift=1.6cm]current page.south west);
+  \draw[white, line width=1pt]
+      ([xshift=1.6cm]current page.north west)
+   -- ([xshift=1.6cm]current page.south west);
+\end{tikzpicture}
+
+\centering
+\vspace*{-0.8cm}
+\includegraphics[width=0.42\textwidth]{logo-1.png}\\[0.7cm]
+{\Large \bfseries \'{E}cole Marocaine des Sciences de l'Ing\'{e}nieur (EMSI) --- Tanger\par}
+\vspace{0.2cm}
+\rule{0.75\textwidth}{0.5pt}\\[0.9cm]
+{\Huge \textsc{Rapport Technique}}\\[0.4cm]
+{\large Fili\`{e}re : \textbf{Ing\'{e}nierie Informatique et R\'{e}seaux (IIR)}}\\[1.2cm]
+
+% --- Boite titre ---
+\begin{tcolorbox}[
+  colframe=EMSIGreen,
+  colback=EMSIGreen!3,
+  arc=6pt,
+  boxrule=1.5pt,
+  left=6mm,right=6mm,top=4mm,bottom=4mm,
+  center title,
+  title=\Large \bfseries Intitul\'{e} du projet
+]
+\centering
+\LARGE \bfseries
+Conception et D\'{e}veloppement d'une Plateforme E-Learning CLI
+\end{tcolorbox}
+
+\vspace{1.4cm}
+
+% --- Bloc Realise par / Encadrant ---
+\begin{minipage}[t]{0.48\textwidth}
+  \textbf{\faUsers\enspace R\'{e}alis\'{e} par :}\\[2mm]
+  \begin{tabular}{@{}l@{}}
+    -- Zerrari Ziyad\\
+    -- Ziyani Mohamed Amine\\
+    -- Habz Amine
+  \end{tabular}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+  \raggedleft
+  \textbf{\faChalkboardTeacher\enspace Encadrante p\'{e}dagogique :}\\[2mm]
+  Pr. Rachida Fissoune
+\end{minipage}
+
+\vfill
+{\large Ann\'{e}e Universitaire 2025 -- 2026}
+\end{titlepage}
+
+\newpage
+
+\section*{Résumé Exécutif}
+
+La Plateforme E-Learning CLI (Interface en Ligne de Commande) est un système de gestion éducative basé sur les rôles, développé en Python. Elle offre une solution complète pour la gestion des activités d'apprentissage en ligne, avec des interfaces dédiées à trois types d'utilisateurs : Étudiants, Enseignants et Administrateurs. Ce rapport présente une analyse technique détaillée de l'architecture, des fonctionnalités, de l'implémentation et des mécanismes de sécurité du système.
+
+\vspace{10pt}
+L'application repose sur un modèle de stockage léger basé sur des fichiers JSON. Sans dépendances externes au-delà de la bibliothèque standard Python, la plateforme démontre une excellente portabilité et une facilité de déploiement remarquable. L'implémentation suit les principes de la programmation orientée objet et intègre des mécanismes robustes d'authentification, de validation des données et de contrôle d'accès basé sur les rôles.
+
+\newpage
+
+\section{Présentation du Projet et Objectifs}
+
+\subsection{Périmètre et Finalité}
+
+La Plateforme E-Learning CLI constitue une solution technologique éducative complète, conçue pour faciliter l'apprentissage en ligne via une interface en ligne de commande. Les objectifs principaux sont les suivants :
+
+\begin{itemize}
+    \item \textbf{Gestion de l'apprentissage} : Offrir aux étudiants une plateforme pour s'inscrire aux cours, accéder aux leçons et suivre leur progression académique
+    \item \textbf{Création de contenu} : Permettre aux enseignants de créer et gérer des contenus pédagogiques associés à des évaluations
+    \item \textbf{Administration système} : Fournir aux administrateurs les outils nécessaires pour gérer les utilisateurs, superviser les cours et surveiller les statistiques de la plateforme
+    \item \textbf{Accessibilité} : Proposer une solution légère nécessitant un minimum de ressources système et de dépendances
+\end{itemize}
+
+\subsection{Fonctionnalités Clés par Rôle}
+
+\subsubsection{Capacités des Étudiants}
+Les étudiants peuvent parcourir les cours disponibles, s'inscrire aux cours de leur choix, accéder au contenu des leçons, marquer les leçons comme terminées, passer des quiz pour évaluer leurs connaissances, suivre leur progression et leur taux de complétion, consulter leurs scores aux quiz et gérer les informations de leur compte, notamment le changement de mot de passe.
+
+\subsubsection{Capacités des Enseignants}
+Les enseignants peuvent créer de nouveaux cours avec des leçons et des quiz associés, modifier les titres et descriptions des cours, ajouter, modifier et supprimer des leçons au sein de leurs cours, suivre les inscriptions et la progression des étudiants, consulter les performances des étudiants aux quiz et gérer les informations de leur compte.
+
+\subsubsection{Capacités des Administrateurs}
+Les administrateurs disposent de capacités de gestion à l'échelle du système : lister tous les utilisateurs, supprimer des comptes, modifier les rôles, consulter l'ensemble des cours, supprimer des cours, accéder aux statistiques du système (taux de complétion, métriques d'utilisation) et administrer la plateforme globalement.
+
+\subsection{Stack Technologique}
+
+\begin{center}
+\begin{tabular}{>{\bfseries}l l}
+\toprule
+Composant & Technologie \\
+\midrule
+Langage de programmation & Python 3.6+ \\
+Stockage des données & Fichiers JSON \\
+Authentification & Hachage SHA-256 \\
+Interface utilisateur & Interface en Ligne de Commande (CLI) \\
+Architecture & Conception modulaire basée sur les rôles \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\newpage
+
+\section{Architecture Système et Implémentation}
+
+\subsection{Vue d'Ensemble de l'Architecture}
+
+La Plateforme E-Learning CLI suit une architecture modulaire avec une séparation claire des responsabilités. L'application se compose de six modules principaux, chacun responsable d'une fonctionnalité spécifique :
+
+\vspace{5pt}
+\begin{enumerate}
+    \item \textbf{main.py} : Point d'entrée de l'application et logique de routage
+    \item \textbf{authentification.py} : Authentification et inscription des utilisateurs
+    \item \textbf{etudiant.py} : Interface et fonctionnalités pour les étudiants
+    \item \textbf{enseignant.py} : Interface et fonctionnalités pour les enseignants
+    \item \textbf{admin.py} : Interface et fonctionnalités pour les administrateurs
+    \item \textbf{data.py} : Utilitaires de persistance et de validation des données
+\end{enumerate}
+
+\subsection{Modèle de Données et Stockage}
+
+Le système utilise un stockage basé sur des fichiers JSON pour la simplicité et la portabilité. Trois fichiers de données principaux gèrent l'état du système :
+
+\vspace{5pt}
+\begin{itemize}
+    \item \textbf{users.json} : Stocke les comptes utilisateurs avec identifiants, identifiants de connexion, rôles et informations de profil
+    \item \textbf{courses.json} : Maintient les structures des cours incluant leçons, quiz et métadonnées
+    \item \textbf{progress.json} : Suit le statut de complétion des étudiants et les scores aux quiz à des fins d'analyse
+\end{itemize}
+
+Chaque fichier de données est chargé en mémoire lors des opérations, puis réécrit sur le disque après modification. Cette approche garantit la cohérence des données et permet un accès rapide à l'information.
+
+\subsection{Description des Modules}
+
+\subsubsection{Module d'Authentification Central}
+Le module \texttt{authentification.py} implémente une authentification sécurisée avec :
+\begin{itemize}
+    \item Fonctionnalité de connexion avec limitation à trois tentatives maximales
+    \item Inscription avec validation de l'unicité de l'adresse e-mail et du nom d'utilisateur
+    \item Hachage sécurisé des mots de passe via l'algorithme SHA-256
+    \item Fonctionnalité de changement de mot de passe avec vérification
+\end{itemize}
+
+\subsubsection{Module de Gestion des Données}
+Le module \texttt{data.py} fournit des fonctions utilitaires pour :
+\begin{itemize}
+    \item Le chargement et la sauvegarde des fichiers JSON
+    \item La validation des noms d'utilisateur (3 à 20 caractères, alphanumériques avec tirets bas et tirets)
+    \item La validation des mots de passe (minimum 6 caractères)
+    \item La génération d'identifiants séquentiels uniques
+\end{itemize}
+
+\subsubsection{Modules Spécifiques aux Rôles}
+Chaque rôle utilisateur dispose d'un module dédié implémentant l'interface et la logique métier correspondantes :
+\begin{itemize}
+    \item \texttt{admin.py} : Opérations CRUD sur les utilisateurs et cours, génération de rapports statistiques
+    \item \texttt{enseignant.py} : Création et gestion des cours, suivi de la progression des étudiants
+    \item \texttt{etudiant.py} : Inscription aux cours, accès aux leçons, participation aux quiz
+\end{itemize}
+
+\subsection{Flux Utilisateur et Gestion des États}
+
+L'application implémente une boucle principale qui orchestre les interactions utilisateur :
+
+\begin{lstlisting}
+Menu Principal :
+    1. Connexion
+    2. Inscription
+    3. Quitter
+    
+Apres connexion, les utilisateurs sont diriges vers
+des menus specifiques a leur role.
+\end{lstlisting}
+
+\subsection{Menus et Interfaces Console}
+
+Cette section présente l'ensemble des interfaces de menu disponibles pour chaque type d'utilisateur.
+
+\subsubsection{Menu Principal (Authentification)}
+
+L'interface initiale affichée au démarrage de l'application :
+
+\begin{lstlisting}[language=text]
+=== Application E-Learning ===
+1. Se connecter
+2. S'inscrire
+3. Quitter
+
+Votre choix : 
+\end{lstlisting}
+
+Ce menu constitue le point d'entrée principal permettant à l'utilisateur de se connecter, de s'enregistrer ou de quitter l'application.
+
+\subsubsection{Menu Administrateur}
+
+Les administrateurs ont accès à un menu complet de gestion système :
+
+\begin{lstlisting}[language=text]
+===== MENU ADMINISTRATEUR =====
+1. Ajouter un utilisateur
+2. Supprimer un utilisateur
+3. Modifier les informations d'un utilisateur
+4. Consulter la liste des utilisateurs
+5. Rechercher un utilisateur
+6. Voir les statistiques
+7. Déconnexion
+
+Votre choix : 
+\end{lstlisting}
+
+Ce menu permet aux administrateurs de gérer les comptes utilisateurs, visualiser les statistiques du système et superviser l'ensemble de la plateforme. Les opérations CRUD complètes sur les utilisateurs et les cours sont disponibles.
+
+\subsubsection{Menu Enseignant}
+
+Les enseignants disposent d'un menu dédié à la gestion pédagogique :
+
+\begin{lstlisting}[language=text]
+=== Espace Enseignant ===
+1. Créer un cours
+2. Modifier un cours
+3. Supprimer un cours
+4. Gérer les quiz
+5. Gérer mes élèves
+6. Gérer mon profil
+7. Quitter
+
+Votre choix : 
+\end{lstlisting}
+
+Ce menu permet aux enseignants de créer et gérer leurs cours, d'ajouter des leçons et des quiz, de suivre la progression des étudiants inscrits et de gérer leur profil personnel.
+
+\subsubsection{Menu Étudiant}
+
+Les étudiants accèdent à un menu orienté vers l'apprentissage :
+
+\begin{lstlisting}[language=text]
+=== Espace Etudiant ===
+1. Inscription aux cours
+2. Visionnage des leçons
+3. Suivi de progression
+4. Passer des quiz
+5. Gérer mon profil
+6. Quitter
+
+Votre choix : 
+\end{lstlisting}
+
+Ce menu offre aux étudiants la possibilité de s'inscrire aux cours disponibles, de consulter les contenus pédagogiques, de suivre leur progression, de réaliser les évaluations et de gérer leur compte.
+
+\newpage
+
+\section{Sécurité et Gestion des Données}
+
+\subsection{Implémentation de la Sécurité}
+
+\subsubsection{Sécurité des Mots de Passe}
+La plateforme utilise le hachage SHA-256 pour le stockage sécurisé des mots de passe. Ceux-ci ne sont jamais stockés en clair ; à la place, leurs empreintes cryptographiques sont calculées et stockées. La vérification à la connexion consiste à hacher le mot de passe fourni et à le comparer avec l'empreinte stockée.
+
+\subsubsection{Validation des Entrées}
+Une validation complète des entrées est implémentée dans toute l'application :
+\begin{itemize}
+    \item Les noms d'utilisateur doivent comporter entre 3 et 20 caractères et ne contenir que des caractères alphanumériques, des tirets bas et des tirets
+    \item Les mots de passe doivent comporter au moins 6 caractères
+    \item Les adresses e-mail sont vérifiées pour leur unicité
+    \item Les noms d'utilisateur sont vérifiés pour éviter les doublons
+\end{itemize}
+
+\subsubsection{Contrôle d'Accès Basé sur les Rôles}
+L'application implémente un contrôle d'accès basé sur les rôles au niveau du routage. Après authentification, les utilisateurs sont dirigés vers des menus ne contenant que les opérations appropriées à leur rôle :
+\begin{itemize}
+    \item \textbf{Administrateur} : Accès complet au système
+    \item \textbf{Enseignant} : Création et gestion des cours
+    \item \textbf{Étudiant} : Inscription aux cours et activités d'apprentissage
+\end{itemize}
+
+\subsection{Gestion des Erreurs et des Exceptions}
+
+L'application implémente une gestion robuste des erreurs :
+\begin{itemize}
+    \item Des blocs try-catch au niveau de la boucle principale empêchent les exceptions non gérées de terminer l'application
+    \item Les erreurs de désérialisation JSON sont gérées avec des structures de données vides par défaut
+    \item Les choix invalides de l'utilisateur sont interceptés et signalés avec des messages explicites
+    \item Les erreurs d'entrées/sorties fichiers sont gérées pour assurer la cohérence des données
+\end{itemize}
+
+\subsection{Stratégie de Persistance des Données}
+
+La persistance des données suit un schéma simple mais efficace :
+\begin{itemize}
+    \item Les données sont chargées depuis les fichiers JSON au début de chaque opération
+    \item Les modifications sont effectuées en mémoire
+    \item Les données mises à jour sont réécrites dans les fichiers après chaque changement
+    \item Cela garantit la cohérence finale et prévient la perte de données en cas de terminaison inattendue
+\end{itemize}
+
+\newpage
+
+\section{Développement et Perspectives}
+
+\subsection{Capacités Actuelles}
+
+La Plateforme E-Learning CLI fournit actuellement un système de gestion éducative pleinement fonctionnel, adapté à :
+\begin{itemize}
+    \item Les établissements éducatifs de petite et moyenne taille
+    \item Les programmes de formation et les initiatives d'apprentissage en entreprise
+    \item La recherche éducative et le prototypage
+    \item Les environnements de déploiement légers aux ressources limitées
+\end{itemize}
+
+\subsection{Points Forts de la Plateforme}
+
+\begin{enumerate}
+    \item \textbf{Dépendances minimales} : Utilise uniquement la bibliothèque standard Python, réduisant la complexité du déploiement
+    \item \textbf{Conception modulaire} : La séparation claire des responsabilités facilite la maintenance et l'extension
+    \item \textbf{Architecture basée sur les rôles} : Modèle de permissions intuitif aligné sur les structures éducatives réelles
+    \item \textbf{Indépendance des données} : Le stockage basé sur des fichiers élimine les exigences de configuration de base de données
+    \item \textbf{Conscience sécuritaire} : Implémente le hachage des mots de passe et les bonnes pratiques de validation des entrées
+    \item \textbf{Convivialité} : L'interface à menus guides clairement les utilisateurs dans les opérations
+\end{enumerate}
+
+\subsection{Recommandations d'Amélioration}
+
+\subsubsection{Améliorations à Court Terme}
+\begin{itemize}
+    \item Implémenter un support de base de données (SQLite, PostgreSQL) pour une meilleure scalabilité
+    \item Ajouter une fonctionnalité de journalisation pour suivre les événements système et les actions utilisateurs
+    \item Renforcer la validation des entrées avec des expressions régulières
+    \item Implémenter des mécanismes de sauvegarde et de récupération des données
+\end{itemize}
+
+\subsubsection{Améliorations à Moyen Terme}
+\begin{itemize}
+    \item Développer une interface web avec Flask ou Django
+    \item Implémenter des notifications par e-mail pour les cours et annonces
+    \item Ajouter le support multimédia pour des contenus de cours enrichis
+    \item Intégrer des tableaux de bord d'analyse et de reporting des évaluations
+\end{itemize}
+
+\subsubsection{Améliorations Stratégiques à Long Terme}
+\begin{itemize}
+    \item Migrer vers une architecture microservices pour une meilleure scalabilité
+    \item Implémenter une passerelle API pour les intégrations tierces
+    \item Ajouter des capacités d'apprentissage automatique pour des recommandations d'apprentissage personnalisées
+    \item Développer des applications mobiles pour une accessibilité élargie
+\end{itemize}
+
+\subsection{Qualité du Code et Maintenance}
+
+La base de code démontre de bonnes pratiques, notamment :
+\begin{itemize}
+    \item Des conventions de nommage claires (mélange approprié de français et d'anglais)
+    \item Une décomposition logique des fonctions
+    \item Des messages d'erreur cohérents pour les utilisateurs
+    \item La validation des entrées aux couches limites
+\end{itemize}
+
+Recommandations d'amélioration :
+\begin{itemize}
+    \item Ajouter des docstrings complètes à toutes les fonctions
+    \item Implémenter des tests unitaires pour assurer la fiabilité du code
+    \item Utiliser les annotations de type pour une meilleure clarté du code
+    \item Créer un fichier de configuration pour les paramètres système
+\end{itemize}
+
+\section{Conclusion}
+
+La Plateforme E-Learning CLI représente une solution technologique éducative bien structurée, qui parvient à équilibrer simplicité et fonctionnalité. En exploitant la bibliothèque standard Python et en implémentant une architecture modulaire basée sur les rôles, la plateforme offre un système de gestion éducative accessible et maintenable.
+
+Les mesures de sécurité mises en œuvre, notamment le hachage des mots de passe et la validation des entrées, témoignent d'une approche de développement soucieuse de la sécurité. Le modèle de contrôle d'accès basé sur les rôles s'aligne sur les hiérarchies éducatives réelles, rendant le système intuitif pour des groupes d'utilisateurs variés.
+
+Grâce à ses exigences minimales en matière de déploiement et à son code source clair, la plateforme constitue une excellente base pour les initiatives éducatives. Les améliorations futures devraient se concentrer sur le renforcement de la scalabilité, l'extension des interfaces utilisateurs et l'intégration d'analyses avancées, tout en préservant la simplicité qui rend le système actuel accessible.
+
+Ce projet illustre l'application efficace des principes d'ingénierie logicielle et constitue une base solide pour des développements ultérieurs. Les organisations à la recherche d'une solution légère de gestion éducative trouveront cette plateforme immédiatement utilisable, tandis que les développeurs pourront s'en servir comme référence ou point de départ pour des systèmes e-learning plus complexes.
+
+\end{document}

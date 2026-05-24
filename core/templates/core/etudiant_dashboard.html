@@ -1,0 +1,58 @@
+{% extends 'core/base.html' %}
+{% block title %}Tableau de bord - Étudiant{% endblock %}
+{% block content %}
+<div class="flex justify-between items-end mb-12">
+    <div>
+        <h1 class="text-4xl font-black text-gray-900 tracking-tight">Tableau de bord</h1>
+        <p class="text-gray-500 mt-2 font-medium">Content de vous revoir, {{ user.nom }} !</p>
+    </div>
+    <a href="{% url 'course_list' %}" class="bg-gray-900 text-white px-6 py-3 rounded-full text-sm font-bold hover:bg-gray-800 transition-all shadow-sm">
+        Parcourir les cours
+    </a>
+</div>
+
+<div class="grid grid-cols-1 gap-10">
+    <section>
+        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-6 ml-1">Mes cours en cours</h2>
+        {% if progress_data %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for item in progress_data %}
+                    <div class="group bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:border-red-100 transition-all duration-300">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="p-3 bg-red-50 rounded-2xl group-hover:bg-red-600 transition-colors duration-300">
+                                <svg class="w-6 h-6 text-red-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18 18.246 18.477 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="font-black text-xl text-gray-900 mb-2 leading-tight group-hover:text-red-600 transition-colors">{{ item.course.title }}</h3>
+                        <p class="text-gray-400 text-sm font-bold uppercase tracking-tighter mb-6">{{ item.course.teacher.nom }}</p>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-end">
+                                <span class="text-xs font-black text-gray-400 uppercase tracking-widest">Progression</span>
+                                <span class="text-sm font-black text-red-600">{{ item.percentage }}%</span>
+                            </div>
+                            <div class="w-full bg-gray-50 rounded-full h-3 overflow-hidden">
+                                <div class="bg-red-600 h-full rounded-full transition-all duration-1000" style="width: {{ item.percentage }}%"></div>
+                            </div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase">{{ item.completed_count }} / {{ item.course.lessons.count }} leçons terminées</p>
+                        </div>
+                        
+                        <a href="{% url 'course_detail' item.course.pk %}" class="mt-8 block w-full text-center py-4 bg-gray-50 group-hover:bg-red-600 group-hover:text-white rounded-2xl text-sm font-black transition-all">
+                            {% if item.percentage == 100 %}Revoir le cours{% else %}Continuer l'apprentissage{% endif %}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-white rounded-3xl p-16 border border-dashed border-gray-200 text-center">
+                <p class="text-gray-400 font-medium mb-8">Vous n'êtes pas encore inscrit à un cours.</p>
+                <a href="{% url 'course_list' %}" class="bg-red-600 text-white px-10 py-4 rounded-full text-lg font-bold hover:bg-red-700 transition-all shadow-lg inline-block">
+                    Découvrir le catalogue
+                </a>
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

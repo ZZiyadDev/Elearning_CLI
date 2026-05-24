@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+{% block title %}Accueil - E-Learning{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto text-center py-32">
+    <h1 class="text-6xl font-black text-gray-900 mb-6 tracking-tight">Apprenez sans limites.</h1>
+    <p class="text-xl text-gray-500 mb-12 max-w-2xl mx-auto leading-relaxed">
+        Une plateforme d'apprentissage moderne conçue pour les étudiants ambitieux et les enseignants passionnés.
+    </p>
+    <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
+        <a href="{% url 'register' %}" class="w-full sm:w-auto bg-red-600 text-white px-10 py-4 rounded-full text-lg font-bold hover:bg-red-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            Commencer gratuitement
+        </a>
+        <a href="{% url 'login' %}" class="w-full sm:w-auto border-2 border-gray-200 text-gray-700 px-10 py-4 rounded-full text-lg font-bold hover:bg-gray-50 transition-all">
+            Se connecter
+        </a>
+    </div>
+</div>
+{% endblock %}

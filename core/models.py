@@ -29,6 +29,8 @@ class Lesson(models.Model):
     lesson_id = models.IntegerField()
     title = models.CharField(max_length=255)
     content = models.TextField()
+    video_url = models.URLField(max_length=500, blank=True, null=True)
+    materials_url = models.URLField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return f"{self.course.title} - {self.title}"

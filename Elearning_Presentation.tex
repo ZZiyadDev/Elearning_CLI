@@ -1,0 +1,234 @@
+\documentclass[10pt]{beamer}
+
+% -- Packages --
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{fontawesome5}
+\usepackage{listings}
+\usetikzlibrary{shapes,arrows,positioning,shadows}
+
+% -- Theme Selection --
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% -- Custom Colors (EMSI Style) --
+\definecolor{EMSIGreen}{RGB}{0,130,60}
+\setbeamercolor{palette primary}{bg=EMSIGreen,fg=white}
+\setbeamercolor{palette secondary}{bg=EMSIGreen!80,fg=white}
+\setbeamercolor{palette tertiary}{bg=EMSIGreen!60,fg=white}
+\setbeamercolor{structure}{fg=EMSIGreen}
+\setbeamercolor{titlelike}{parent=palette primary}
+
+% -- Listings Configuration --
+\lstset{
+    basicstyle=\ttfamily\tiny,
+    breaklines=true,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    language=Python,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+}
+
+% -- Title Page Information --
+\title[Plateforme E-Learning Django]{Conception et D\'{e}veloppement d'une Plateforme E-Learning Web Interactive avec Django}
+\subtitle{Projet de Fin de Module -- Fili\`{e}re IIR}
+\author[Zerrari, Ziyani, Habz]{Zerrari Ziyad \and Ziyani Mohamed Amine \and Habz Amine}
+\institute[EMSI Tanger]{
+    \'{E}cole Marocaine des Sciences de l'Ing\'{e}nieur (EMSI) \\
+    \medskip
+    \textit{Encadrante : Pr. Rachida Fissoune}
+}
+\date{Ann\'{e}e Universitaire 2025 -- 2026}
+
+% -- Logo Placeholder (Uncomment and add logo-1.png if available) --
+% \titlegraphic{\includegraphics[width=2cm]{logo-1.png}}
+
+\begin{document}
+
+% --- Slide 1: Title ---
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% --- Slide 2: Table of Contents ---
+\begin{frame}{Plan de la Pr\'{e}sentation}
+    \tableofcontents
+\end{frame}
+
+% --- Section 1: Introduction ---
+\section{Introduction et Contexte}
+
+\begin{frame}{Introduction et Contexte}
+    \begin{block}{Le Projet}
+        D\'{e}veloppement d'une solution \textbf{E-Learning} moderne pour centraliser les interactions p\'{e}dagogiques.
+    \end{block}
+    
+    \begin{itemize}
+        \item \textbf{Gen\`{e}se :} Migration d'une version CLI (fichiers JSON) vers une plateforme Web.
+        \item \textbf{Objectif :} Am\'{e}liorer l'accessibilit\'{e}, l'interactivit\'{e} et la s\'{e}curit\'{e}.
+        \item \textbf{Public cible :} \'{E}tudiants, Enseignants et Administrateurs.
+    \end{itemize}
+    
+    \begin{center}
+        \faLaptopCode \quad $\rightarrow$ \quad \faGlobe
+    \end{center}
+\end{frame}
+
+% --- Section 2: Analyse des Besoins ---
+\section{Analyse des Besoins}
+
+\begin{frame}{Besoins Fonctionnels par Profil}
+    \begin{columns}[T]
+        \begin{column}{0.33\textwidth}
+            \begin{exampleblock}{\centering \faUserGrad \\ \'{E}tudiant}
+                \tiny
+                \begin{itemize}
+                    \item Inscription aux cours
+                    \item Consultation des le\c{c}ons
+                    \item Passage de Quiz
+                    \item Suivi de progression
+                \end{itemize}
+            \end{exampleblock}
+        \end{column}
+        \begin{column}{0.33\textwidth}
+            \begin{exampleblock}{\centering \faChalkboardTeacher \\ Enseignant}
+                \tiny
+                \begin{itemize}
+                    \item Cr\'{e}ation de cours
+                    \item Gestion des le\c{c}ons
+                    \item Cr\'{e}ation de Quiz
+                    \item Suivi des \'{e}l\`{e}ves
+                \end{itemize}
+            \end{exampleblock}
+        \end{column}
+        \begin{column}{0.33\textwidth}
+            \begin{exampleblock}{\centering \faUserShield \\ Admin}
+                \tiny
+                \begin{itemize}
+                    \item Gestion utilisateurs
+                    \item Gestion des r\^{o}les
+                    \item Statistiques globales
+                    \item Maintenance syst\`{e}me
+                \end{itemize}
+            \end{exampleblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Section 3: Architecture ---
+\section{Architecture et Technologies}
+
+\begin{frame}{Architecture MVT (Model-View-Template)}
+    \centering
+    \begin{tikzpicture}[node distance=1.5cm, auto]
+        \tikzstyle{block} = [rectangle, draw, fill=EMSIGreen!20, text width=4em, text centered, rounded corners, minimum height=3em, font=\tiny]
+        \tikzstyle{line} = [draw, -latex', line width=0.8pt]
+
+        \node [block] (model) {Mod\`{e}le \\ (SQLite)};
+        \node [block, right=of model] (view) {Vue \\ (Python/Django)};
+        \node [block, right=of view] (template) {Template \\ (HTML/Tailwind)};
+        \node [block, above=of view] (user) {Utilisateur};
+
+        \path [line] (user) -- (view);
+        \path [line] (view) -- (user);
+        \path [line] (view) -- (model);
+        \path [line] (model) -- (view);
+        \path [line] (view) -- (template);
+        \path [line] (template) -- (view);
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Stack Technologique}
+    \begin{center}
+        \begin{tabular}{ll}
+            \toprule
+            \textbf{Composant} & \textbf{Technologie} \\
+            \midrule
+            \faPython \quad Backend & Django 6.0 (Python 3.10+) \\
+            \faDatabase \quad Base de donn\'{e}es & SQLite 3 \\
+            \faCss3Alt \quad Frontend & Tailwind CSS / HTML5 \\
+            \faLock \quad S\'{e}curit\'{e} & Django Auth System \\
+            \faGithub \quad Versioning & Git \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+% --- Section 4: Impl\'{e}mentation ---
+\section{Impl\'{e}mentation}
+
+\begin{frame}{Mod\`{e}le de Donn\'{e}es (Extrait)}
+    \begin{lstlisting}
+class Course(models.Model):
+    title = models.CharField(max_length=255)
+    teacher = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
+    enrolled_students = models.ManyToManyField(Utilisateur, blank=True)
+
+class Progress(models.Model):
+    student = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    completed_lessons = models.JSONField(default=list)
+    quiz_scores = models.JSONField(default=dict)
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{S\'{e}curit\'{e} du Syst\`{e}me}
+    \begin{itemize}
+        \item \textbf{Mots de passe :} Hachage cryptographique PBKDF2.
+        \item \textbf{Protection CSRF :} Jetons obligatoires sur tous les formulaires.
+        \item \textbf{Protection XSS :} \'{E}chappement automatique des donn\'{e}es dans les templates.
+        \item \textbf{Injection SQL :} Utilisation syst\'{e}matique de l'ORM Django (requ\^{e}tes param\'{e}tr\'{e}es).
+        \item \textbf{Autorisation :} Contr\^{o}le d'acc\`{e}s granulaire via r\^{o}les personnalis\'{e}s.
+    \end{itemize}
+\end{frame}
+
+% --- Section 5: Conclusion ---
+\section{Conclusion et Perspectives}
+
+\begin{frame}{Conclusion}
+    \begin{itemize}
+        \item \textbf{R\'{e}ussite :} Migration fluide du CLI vers le Web.
+        \item \textbf{Qualit\'{e} :} Code modulaire, maintenable et s\'{e}curis\'{e}.
+        \item \textbf{Interface :} Dashboard r\'{e}actif et intuitif pour tous les profils.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Perspectives d'\'{E}volution}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Technique}
+                \begin{itemize}
+                    \item Migration PostgreSQL
+                    \item API REST (Mobile)
+                    \item Notifications Emails
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Fonctionnel}
+                \begin{itemize}
+                    \item Apprentissage Vid\'{e}o
+                    \item Assistant IA (LLM)
+                    \item Syst\`{e}me de Paiement
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Final Slide ---
+\begin{frame}
+    \centering
+    \Huge \textcolor{EMSIGreen}{Merci pour votre attention !} \\
+    \bigskip
+    \normalsize Questions ?
+\end{frame}
+
+\end{document}

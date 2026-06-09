@@ -1,4 +1,5 @@
-\documentclass[12pt,a4paper]{article}
+
+\documentclass[12pt,a4paper]{report}
 
 % -- Encodage et langue --
 \usepackage[utf8]{inputenc}
@@ -9,6 +10,8 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{graphicx}
 \usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{xurl}
 \usepackage{fancyhdr}
 \usepackage{hyperref}
 \usepackage{listings}
@@ -17,28 +20,73 @@
 \usepackage{tikz}
 \usepackage{tcolorbox}
 \usepackage{fontawesome5}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{adjustbox}
+\usepackage{bookmark}
+
+\usetikzlibrary{shapes,shapes.geometric,arrows,arrows.meta,positioning,shadows,calc}
 
 % -- Couleur EMSI --
 \definecolor{EMSIGreen}{RGB}{0,130,60}
+\definecolor{CodeGray}{rgb}{0.95,0.95,0.95}
+\definecolor{DjangoDark}{RGB}{9, 46, 32}
 
-\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+\hypersetup{
+    colorlinks=true, 
+    linkcolor=black, 
+    urlcolor=blue, 
+    citecolor=black,
+    hypertexnames=false
+}
 
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{Rapport -- Plateforme Elearning\_CLI}
-\lhead{Documentation Technique}
+\rhead{Plateforme E-Learning Web -- Django}
+\lhead{Rapport Technique Détaillé}
 \cfoot{\thepage}
+
+\onehalfspacing
+\setlength{\headheight}{15pt}
+\emergencystretch=2em
 
 \lstset{
     basicstyle=\ttfamily\small,
     breaklines=true,
-    backgroundcolor=\color{gray!10},
+    backgroundcolor=\color{CodeGray},
     frame=single,
     language=Python,
-    keywordstyle=\color{blue},
-    commentstyle=\color{gray},
+    keywordstyle=\bfseries\color{blue},
+    commentstyle=\itshape\color{gray},
     stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=5pt,
+    showstringspaces=false,
+    captionpos=b,
 }
+
+
+% -- Compatibilite listings : langage JavaScript --
+\lstdefinelanguage{JavaScript}{
+  keywords={const,let,var,function,return,if,else,for,while,module,exports,import,from,export,default,true,false,null},
+  keywordstyle=\bfseries\color{blue},
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]"
+}
+
+
+% Reformatage des chapitres
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}
+  {\chaptertitlename\ \thechapter}{20pt}{\Huge}
 
 \begin{document}
 
@@ -47,7 +95,6 @@
 % ============================================================
 \begin{titlepage}
 \thispagestyle{empty}
-% --- Bande verticale gauche + filet blanc ---
 \begin{tikzpicture}[remember picture,overlay]
   \fill[EMSIGreen] (current page.north west)
       rectangle ([xshift=1.6cm]current page.south west);
@@ -58,372 +105,523 @@
 
 \centering
 \vspace*{-0.8cm}
+\IfFileExists{logo-1.png}{%
 \includegraphics[width=0.42\textwidth]{logo-1.png}\\[0.7cm]
+}{%
+\begin{tcolorbox}[colframe=EMSIGreen, colback=EMSIGreen!5, width=0.42\textwidth, arc=4pt, boxrule=1pt]
+\centering\Large\bfseries EMSI
+\end{tcolorbox}\par\vspace{0.7cm}
+}
 {\Large \bfseries \'{E}cole Marocaine des Sciences de l'Ing\'{e}nieur (EMSI) --- Tanger\par}
 \vspace{0.2cm}
 \rule{0.75\textwidth}{0.5pt}\\[0.9cm]
-{\Huge \textsc{Rapport Technique}}\\[0.4cm]
+{\Huge \textsc{Rapport de Projet de Fin de Module}}\\[0.4cm]
 {\large Fili\`{e}re : \textbf{Ing\'{e}nierie Informatique et R\'{e}seaux (IIR)}}\\[1.2cm]
 
-% --- Boite titre ---
 \begin{tcolorbox}[
   colframe=EMSIGreen,
-  colback=EMSIGreen!3,
-  arc=6pt,
-  boxrule=1.5pt,
-  left=6mm,right=6mm,top=4mm,bottom=4mm,
-  center title,
-  title=\Large \bfseries Intitul\'{e} du projet
+  colback=EMSIGreen!5,
+  arc=4pt,
+  boxrule=1.2pt,
+  left=8mm, right=8mm, top=5mm, bottom=5mm
 ]
 \centering
 \LARGE \bfseries
-Conception et D\'{e}veloppement d'une Plateforme E-Learning CLI
+Conception et D\'{e}veloppement\\[4pt]
+d'une Plateforme E-Learning
 \end{tcolorbox}
 
-\vspace{1.4cm}
+\vspace{2cm}
 
-% --- Bloc Realise par / Encadrant ---
-\begin{minipage}[t]{0.48\textwidth}
-  \textbf{\faUsers\enspace R\'{e}alis\'{e} par :}\\[2mm]
-  \begin{tabular}{@{}l@{}}
-    -- Zerrari Ziyad\\
-    -- Ziyani Mohamed Amine\\
-    -- Habz Amine
-  \end{tabular}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.48\textwidth}
-  \raggedleft
-  \textbf{\faChalkboardTeacher\enspace Encadrante p\'{e}dagogique :}\\[2mm]
-  Pr. Rachida Fissoune
-\end{minipage}
+\begin{tabular}{rl}
+\textbf{R\'{e}alis\'{e} par :} & Zerrari Ziyad \\
+                               & Ziyani Mohamed Amine \\
+                               & Aboujjid Mayssae \\
+                               & Hajjad Ikrame \\[0.8cm]
+\textbf{Encadrante :}          & Pr.\ Soundouss Abroun \\
+\end{tabular}
 
 \vfill
 {\large Ann\'{e}e Universitaire 2025 -- 2026}
 \end{titlepage}
 
 \newpage
+\section*{Résumé}
+Ce rapport présente la conception, le développement et l'amélioration d'une plateforme web d'apprentissage en ligne. Le projet a d'abord été réalisé sous forme d'application console en Python, puis refondu vers une architecture web moderne basée sur Django. Cette migration a permis de dépasser les limites de l'interface terminal : expérience utilisateur restreinte, persistance limitée, absence de contenus multimédias intégrés et faible adaptation à un usage multi-utilisateur.
 
-\section*{Résumé Exécutif}
-
-La Plateforme E-Learning CLI (Interface en Ligne de Commande) est un système de gestion éducative basé sur les rôles, développé en Python. Elle offre une solution complète pour la gestion des activités d'apprentissage en ligne, avec des interfaces dédiées à trois types d'utilisateurs : Étudiants, Enseignants et Administrateurs. Ce rapport présente une analyse technique détaillée de l'architecture, des fonctionnalités, de l'implémentation et des mécanismes de sécurité du système.
+La solution proposée s'organise autour de trois profils : administrateur, enseignant et étudiant. Chaque rôle dispose d'un espace dédié : supervision globale et gestion des comptes pour l'administrateur, création de cours, leçons et quiz pour l'enseignant, consultation de contenus, inscription aux cours, suivi de progression et passage d'évaluations pour l'étudiant. Le rapport détaille l'analyse des besoins, la modélisation des données, l'architecture MVT de Django, les choix d'implémentation backend et frontend, ainsi que les mécanismes de sécurité et de validation mis en place.
 
 \vspace{10pt}
-L'application repose sur un modèle de stockage léger basé sur des fichiers JSON. Sans dépendances externes au-delà de la bibliothèque standard Python, la plateforme démontre une excellente portabilité et une facilité de déploiement remarquable. L'implémentation suit les principes de la programmation orientée objet et intègre des mécanismes robustes d'authentification, de validation des données et de contrôle d'accès basé sur les rôles.
+\textbf{Mots-clés :} E-Learning, Django, Python, MVT, Développement Web, Base de données relationnelle, ORM, Tailwind CSS, Interface Utilisateur.
 
 \newpage
+\tableofcontents
+\listoffigures
+\listoftables
 
-\section{Présentation du Projet et Objectifs}
+\newpage
+\chapter*{Introduction Générale}
+\addcontentsline{toc}{chapter}{Introduction Générale}
 
-\subsection{Périmètre et Finalité}
+L'avènement des technologies numériques et la démocratisation de l'accès à Internet ont profondément bouleversé les paradigmes de l'éducation. L'apprentissage en ligne (E-Learning) a transcendé le statut de simple alternative pour devenir un pilier central, voire indispensable, de la transmission du savoir dans les institutions académiques modernes. Les systèmes de gestion de l'apprentissage (LMS - Learning Management Systems) permettent de s'affranchir des contraintes géographiques et temporelles, offrant ainsi des parcours éducatifs personnalisés et interactifs.
 
-La Plateforme E-Learning CLI constitue une solution technologique éducative complète, conçue pour faciliter l'apprentissage en ligne via une interface en ligne de commande. Les objectifs principaux sont les suivants :
+C'est dans ce contexte technologique et pédagogique que s'inscrit notre projet. L'objectif fondamental était de concevoir et développer une plateforme d'apprentissage à distance capable de centraliser les ressources éducatives, de faciliter l'interaction enseignant-étudiant et d'évaluer les acquis de manière automatisée.
 
+\section*{Évolution du projet : de la CLI au web}
+
+L'histoire de ce projet se divise en deux phases distinctes. La première itération a consisté en la réalisation d'une application en ligne de commande (CLI - Command Line Interface). Bien que cette version ait permis de consolider la logique métier (gestion des rôles, structure des cours, calcul des scores) via des fichiers de stockage JSON, elle s'est heurtée à des limites inhérentes à son environnement :
 \begin{itemize}
-    \item \textbf{Gestion de l'apprentissage} : Offrir aux étudiants une plateforme pour s'inscrire aux cours, accéder aux leçons et suivre leur progression académique
-    \item \textbf{Création de contenu} : Permettre aux enseignants de créer et gérer des contenus pédagogiques associés à des évaluations
-    \item \textbf{Administration système} : Fournir aux administrateurs les outils nécessaires pour gérer les utilisateurs, superviser les cours et surveiller les statistiques de la plateforme
-    \item \textbf{Accessibilité} : Proposer une solution légère nécessitant un minimum de ressources système et de dépendances
+    \item \textbf{Monoposte et Synchrone :} L'utilisation de simples fichiers JSON limitait sévèrement l'accès simultané par plusieurs utilisateurs.
+    \item \textbf{Expérience Utilisateur (UX) austère :} L'absence d'interface graphique rendait la consultation de contenus complexes (textes longs, multimédia) impossible.
+    \item \textbf{Sécurité basique :} La gestion des sessions en console était rudimentaire et vulnérable.
 \end{itemize}
 
-\subsection{Fonctionnalités Clés par Rôle}
+Face à ces constats, une refonte complète a été entreprise. Le passage au framework web \textbf{Django} a marqué un tournant décisif. Cette transition a permis d'adopter une véritable architecture logicielle (MVT), d'intégrer une base de données relationnelle robuste, et de développer une interface utilisateur moderne et réactive grâce au framework \textbf{Tailwind CSS}. De plus, l'ancienne logique CLI a été conservée sous forme de script d'administration Django, assurant ainsi une transition en douceur et démontrant la flexibilité du nouveau système.
 
-\subsubsection{Capacités des Étudiants}
-Les étudiants peuvent parcourir les cours disponibles, s'inscrire aux cours de leur choix, accéder au contenu des leçons, marquer les leçons comme terminées, passer des quiz pour évaluer leurs connaissances, suivre leur progression et leur taux de complétion, consulter leurs scores aux quiz et gérer les informations de leur compte, notamment le changement de mot de passe.
+Ce rapport a pour ambition de retracer l'ensemble du cycle de vie logiciel de cette nouvelle plateforme. Nous commencerons par définir précisément les besoins des différents acteurs (Chapitre 1). Ensuite, nous modéliserons l'architecture et les données du système (Chapitre 2). Le Chapitre 3 sera consacré aux subtilités de l'implémentation technique backend et frontend, suivi d'une analyse des dispositifs de sécurité (Chapitre 4) avant de conclure sur les fonctionnalités de l'interface utilisateur.
 
-\subsubsection{Capacités des Enseignants}
-Les enseignants peuvent créer de nouveaux cours avec des leçons et des quiz associés, modifier les titres et descriptions des cours, ajouter, modifier et supprimer des leçons au sein de leurs cours, suivre les inscriptions et la progression des étudiants, consulter les performances des étudiants aux quiz et gérer les informations de leur compte.
+\chapter{Analyse des Besoins et Spécifications}
 
-\subsubsection{Capacités des Administrateurs}
-Les administrateurs disposent de capacités de gestion à l'échelle du système : lister tous les utilisateurs, supprimer des comptes, modifier les rôles, consulter l'ensemble des cours, supprimer des cours, accéder aux statistiques du système (taux de complétion, métriques d'utilisation) et administrer la plateforme globalement.
+L'ingénierie des besoins constitue une phase déterminante : elle garantit que le produit final répond aux attentes réelles de ses futurs utilisateurs. Cette étape s'est traduite par l'identification des processus métiers et la rédaction de "User Stories" (histoires utilisateurs).
 
-\subsection{Stack Technologique}
+\section{Objectifs du Système}
+Le système doit agir comme un portail unique où :
+\begin{enumerate}
+    \item Les \textbf{Enseignants} peuvent concevoir des parcours pédagogiques (cours, leçons, vidéos) et évaluer leurs élèves.
+    \item Les \textbf{Étudiants} peuvent consulter un catalogue, s'inscrire, consommer le contenu à leur propre rythme et valider leurs acquis via des questionnaires.
+    \item L'\textbf{Administrateur} surveille l'activité de la plateforme, gère les accès et maintient l'intégrité globale.
+\end{enumerate}
 
-\begin{center}
-\begin{tabular}{>{\bfseries}l l}
+\section{Besoins Fonctionnels (User Stories)}
+
+Afin de structurer le développement, nous avons adopté une approche centrée sur l'utilisateur, en découpant les fonctionnalités par rôle.
+
+\subsection{L'Étudiant (Apprenant)}
+\begin{itemize}[label=\faUserGraduate]
+    \item \textit{En tant qu'étudiant}, je veux pouvoir créer un compte sécurisé afin d'accéder à la plateforme.
+    \item \textit{En tant qu'étudiant}, je veux naviguer dans un catalogue de cours disponibles afin de choisir ceux qui correspondent à mon cursus.
+    \item \textit{En tant qu'étudiant}, je veux pouvoir m'inscrire à un cours d'un simple clic.
+    \item \textit{En tant qu'étudiant}, je veux visionner les leçons (texte et vidéos YouTube intégrées) et les marquer comme "terminées".
+    \item \textit{En tant qu'étudiant}, je veux passer des quiz d'évaluation à choix multiples et obtenir mon score immédiatement.
+    \item \textit{En tant qu'étudiant}, je veux visualiser ma progression globale (barre de pourcentage) sur un tableau de bord personnalisé.
+\end{itemize}
+
+\subsection{L'Enseignant (Concepteur pédagogique)}
+\begin{itemize}[label=\faChalkboardTeacher]
+    \item \textit{En tant qu'enseignant}, je veux créer de nouveaux cours en définissant un titre et une description.
+    \item \textit{En tant qu'enseignant}, je veux ajouter, modifier ou supprimer des leçons au sein de mes cours.
+    \item \textit{En tant qu'enseignant}, je veux intégrer des liens vers des ressources externes et des vidéos explicatives (URL YouTube).
+    \item \textit{En tant qu'enseignant}, je veux consulter la liste des étudiants inscrits à mes cours et voir leurs performances aux quiz.
+\end{itemize}
+
+\subsection{L'Administrateur (Superviseur)}
+\begin{itemize}[label=\faUserShield]
+    \item \textit{En tant qu'administrateur}, je veux avoir accès à un tableau de bord global présentant des statistiques clés (nombre total d'inscrits, de cours, répartition par rôle).
+    \item \textit{En tant qu'administrateur}, je veux pouvoir modifier les rôles de n'importe quel compte en cas d'erreur lors de l'inscription.
+\end{itemize}
+
+\section{Besoins Non Fonctionnels}
+Au-delà des fonctionnalités principales, le système doit satisfaire à des exigences de qualité strictes :
+\begin{itemize}
+    \item \textbf{Sécurité et Confidentialité :} Les mots de passe doivent être hachés (impossible de les lire en clair dans la base). Les vues spécifiques à un rôle doivent être inaccessibles aux autres rôles (un étudiant ne peut pas modifier un cours).
+    \item \textbf{Ergonomie et Accessibilité (Responsive Design) :} L'interface doit s'adapter automatiquement à la taille de l'écran (ordinateur, tablette, smartphone).
+    \item \textbf{Maintenabilité :} Le code doit être structuré, modulaire et documenté, respectant les standards PEP8 pour Python.
+\end{itemize}
+
+\section*{Résumé du Chapitre}
+
+Ce chapitre présente les besoins principaux de la plateforme E-Learning. Il identifie les trois acteurs essentiels du système : l’administrateur, l’enseignant et l’étudiant. Chaque utilisateur possède des fonctionnalités adaptées à son rôle, comme la gestion des cours, l’inscription, le suivi de progression ou l’administration des comptes. Le chapitre définit aussi les exigences non fonctionnelles, notamment la sécurité, l’ergonomie, la responsivité et la maintenabilité du système.
+
+
+\chapter{Conception et Architecture du Système}
+
+La conception est l'étape où les exigences se transforment en une architecture logicielle concrète. Le choix de l'écosystème Python/Django a dicté la structuration du projet.
+
+\section{Architecture Logicielle : Le Modèle MVT}
+Django ne suit pas strictement le pattern MVC (Modèle-Vue-Contrôleur) mais propose sa propre interprétation : le MVT (Modèle-Vue-Template).
+\begin{itemize}
+    \item \textbf{Modèle (Model) :} Couche d'accès aux données. Définit la structure de la base de données via l'ORM (Object-Relational Mapping).
+    \item \textbf{Vue (View) :} Le "cerveau". Elle reçoit la requête HTTP, interroge le modèle, applique la logique métier (ex: calcul de la progression), et transmet les données au Template.
+    \item \textbf{Template :} La couche de présentation (HTML/CSS). Elle formate les données reçues de la vue pour le navigateur web.
+\end{itemize}
+
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\sffamily,
+    box/.style={
+        rectangle,
+        rounded corners=6pt,
+        draw=black!45,
+        fill=gray!5,
+        line width=0.6pt,
+        text width=3.4cm,
+        minimum height=1.3cm,
+        align=center,
+        inner sep=8pt
+    },
+    client/.style={box, fill=blue!8},
+    modelbox/.style={box, fill=orange!10},
+    templatebox/.style={box, fill=purple!8},
+    arrow/.style={
+        -{Latex[length=2.2mm]},
+        line width=0.65pt,
+        draw=black!60
+    },
+    labelbox/.style={
+        font=\small\sffamily,
+        fill=white,
+        inner sep=3pt,
+        text=black!75
+    }
+]
+
+% ── Nodes ──────────────────────────────────────────────────
+\node[client]      (browser)  at (0, 0)    {\textbf{Client}\\[2pt]{\scriptsize Navigateur web}};
+\node[box]         (view)     at (6.5, 0)  {\textbf{Vue Django}\\[2pt]{\scriptsize Logique métier}};
+\node[templatebox] (template) at (13, 0)   {\textbf{Template}\\[2pt]{\scriptsize HTML + CSS}};
+\node[modelbox]    (model)    at (6.5,-4)  {\textbf{Modèle}\\[2pt]{\scriptsize ORM + base de données}};
+
+% ── Client → Vue : Requête HTTP (above) ────────────────────
+\draw[arrow]
+    ([yshift=+5pt] browser.east)
+    -- ([yshift=+5pt] view.west)
+    node[labelbox, midway, yshift=+14pt] {1.~Requête HTTP};
+
+% ── Vue → Client : Réponse HTML (below) ────────────────────
+\draw[arrow]
+    ([yshift=-5pt] view.west)
+    -- ([yshift=-5pt] browser.east)
+    node[labelbox, midway, yshift=-14pt] {6.~Réponse HTML};
+
+% ── Vue → Template : Contexte (above) ──────────────────────
+\draw[arrow]
+    ([yshift=+5pt] view.east)
+    -- ([yshift=+5pt] template.west)
+    node[labelbox, midway, yshift=+14pt] {4.~Contexte};
+
+% ── Template → Vue : HTML généré (below) ───────────────────
+\draw[arrow]
+    ([yshift=-5pt] template.west)
+    -- ([yshift=-5pt] view.east)
+    node[labelbox, midway, yshift=-14pt] {5.~HTML généré};
+
+% ── Vue → Modèle : Requête ORM (left side) ─────────────────
+\draw[arrow]
+    ([xshift=-6pt] view.south)
+    -- ([xshift=-6pt] model.north)
+    node[labelbox, midway, xshift=-28pt] {2.~Requête ORM};
+
+% ── Modèle → Vue : Données (right side) ────────────────────
+\draw[arrow]
+    ([xshift=+6pt] model.north)
+    -- ([xshift=+6pt] view.south)
+    node[labelbox, midway, xshift=+26pt] {3.~Données};
+
+\end{tikzpicture}%
+}
+\caption{Flux de traitement de l'architecture MVT dans Django}
+\end{figure}
+
+
+\section{Modélisation de la Base de Données (ERD)}
+La structuration des données est le cœur névralgique de la plateforme. Nous avons opté pour une approche relationnelle, gérée via SQLite en développement. Une attention particulière a été portée aux relations entre entités.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[node distance=2cm, every node/.style={font=\small}]
+    \tikzstyle{entity} = [rectangle, draw=blue!50!black, fill=blue!5, text width=7em, text centered, minimum height=2.5em, thick, rounded corners]
+    \tikzstyle{relation} = [draw, -latex, font=\footnotesize, thick]
+
+    \node[entity] (user) {\textbf{Utilisateur}\\(AbstractUser)};
+    \node[entity, right=4cm of user] (course) {\textbf{Course}};
+    \node[entity, below=2cm of course] (lesson) {\textbf{Lesson}};
+    \node[entity, right=3cm of course] (quiz) {\textbf{Quiz}};
+    \node[entity, below=2cm of quiz] (question) {\textbf{Question}};
+    \node[entity, below=2.5cm of user] (progress) {\textbf{Progress}};
+
+    \path[relation] (user) edge[bend left=15] node[above] {enseigne (1:N)} (course);
+    \path[relation] (course) edge[bend left=15] node[below] {inscrits (N:M)} (user);
+    
+    \path[relation] (course) -- node[right] {contient (1:N)} (lesson);
+    \path[relation] (course) -- node[above] {possède (1:N)} (quiz);
+    \path[relation] (quiz) -- node[right] {compose (1:N)} (question);
+    
+    \path[relation] (user) -- node[left] {a une (1:N)} (progress);
+    \path[relation] (course) -- node[below=5pt] {concerne (1:N)} (progress);
+\end{tikzpicture}%
+}
+\caption{Diagramme entité-relation (ERD) détaillant les cardinalités}
+\end{figure}
+
+\textbf{Explication des choix de conception de données :}
+\begin{itemize}
+    \item L'entité \texttt{Utilisateur} étend la classe native \texttt{AbstractUser} de Django. Cela permet d'ajouter le champ \texttt{role} ('admin', 'enseignant', 'etudiant') tout en bénéficiant de toute la cryptographie sécurisée de Django pour le mot de passe.
+    \item La relation \texttt{Course} - \texttt{Utilisateur} est double : Une relation \textit{One-to-Many} (Un cours a un seul enseignant) et une relation \textit{Many-to-Many} (Un cours a plusieurs étudiants inscrits, et un étudiant peut s'inscrire à plusieurs cours).
+    \item L'entité \texttt{Progress} est une table de liaison enrichie. Au lieu de créer des tables lourdes pour chaque leçon complétée et chaque score, nous exploitons des champs de type \texttt{JSONField}. Cela offre une grande flexibilité de stockage, similaire aux bases NoSQL, au sein même d'une base relationnelle.
+\end{itemize}
+
+\section*{Résumé du Chapitre}
+
+Ce chapitre explique la conception globale de la plateforme et son architecture technique. Le projet repose sur le modèle MVT de Django, qui sépare les données, la logique métier et l’interface utilisateur. Il présente également la modélisation de la base de données à travers les entités principales comme Utilisateur, Course, Lesson, Quiz, Question et Progress. Cette conception permet une organisation claire, évolutive et adaptée aux besoins des différents utilisateurs.
+
+
+\chapter{Implémentation Technique}
+
+Ce chapitre aborde les mécanismes concrets ayant permis la réalisation du projet, de la configuration du backend Django jusqu'à l'intégration de la chaine de compilation CSS pour le frontend.
+
+\section{Environnement et Stack Technologique}
+\begin{table}[H]
+\centering
+\caption{Stack technologique retenue pour la plateforme}
+\begin{tabular}{@{}p{0.27\textwidth}p{0.63\textwidth}@{}}
 \toprule
-Composant & Technologie \\
+\textbf{Couche} & \textbf{Technologies et rôle} \\
 \midrule
-Langage de programmation & Python 3.6+ \\
-Stockage des données & Fichiers JSON \\
-Authentification & Hachage SHA-256 \\
-Interface utilisateur & Interface en Ligne de Commande (CLI) \\
-Architecture & Conception modulaire basée sur les rôles \\
+Backend & Python 3.10+ et Django 6.0.x pour la logique métier, l'authentification, l'ORM et le routage. \\
+Frontend & HTML5 sémantique, templates Django et Tailwind CSS pour une interface responsive et cohérente. \\
+Base de données & SQLite 3 en environnement de développement, avec possibilité de migration vers PostgreSQL en production. \\
+Dépendances & \texttt{requirements.txt} pour Python et \texttt{package.json} pour l'outillage frontend Node.js. \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
 
-\newpage
+\section{Développement Backend : Les Modèles}
 
-\section{Architecture Système et Implémentation}
+L'implémentation des modèles dans \texttt{core/models.py} reflète exactement notre diagramme ERD. La substitution du modèle d'authentification par défaut est définie dans \texttt{settings.py} via \texttt{AUTH\_USER\_MODEL = 'core.Utilisateur'}.
 
-\subsection{Vue d'Ensemble de l'Architecture}
+Voici l'implémentation avancée du suivi de progression utilisant \texttt{JSONField} :
 
-La Plateforme E-Learning CLI suit une architecture modulaire avec une séparation claire des responsabilités. L'application se compose de six modules principaux, chacun responsable d'une fonctionnalité spécifique :
+\begin{lstlisting}[caption=Utilisation de JSONField dans le modèle Progress]
+class Progress(models.Model):
+    student = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, related_name='progress_records')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    # Stocke une simple liste Python des IDs de lecons terminees : ex: [1, 2, 4]
+    completed_lessons = models.JSONField(default=list) 
+    # Stocke un dictionnaire reliant l'ID du quiz au score : ex: {"1": 4, "3": 5}
+    quiz_scores = models.JSONField(default=dict) 
 
-\vspace{5pt}
-\begin{enumerate}
-    \item \textbf{main.py} : Point d'entrée de l'application et logique de routage
-    \item \textbf{authentification.py} : Authentification et inscription des utilisateurs
-    \item \textbf{etudiant.py} : Interface et fonctionnalités pour les étudiants
-    \item \textbf{enseignant.py} : Interface et fonctionnalités pour les enseignants
-    \item \textbf{admin.py} : Interface et fonctionnalités pour les administrateurs
-    \item \textbf{data.py} : Utilitaires de persistance et de validation des données
-\end{enumerate}
+    def __str__(self):
+        return f"Progression de {self.student.username} - {self.course.title}"
+\end{lstlisting}
 
-\subsection{Modèle de Données et Stockage}
+\section{Développement Backend : Les Vues et la Logique Métier}
 
-Le système utilise un stockage basé sur des fichiers JSON pour la simplicité et la portabilité. Trois fichiers de données principaux gèrent l'état du système :
+Les vues de notre application sont de type "Function-Based Views" (FBV). Elles orchestrent le flux. Par exemple, la vue \texttt{dashboard} agit comme un aiguilleur (Routeur interne) en fonction du rôle de l'utilisateur connecté :
 
-\vspace{5pt}
-\begin{itemize}
-    \item \textbf{users.json} : Stocke les comptes utilisateurs avec identifiants, identifiants de connexion, rôles et informations de profil
-    \item \textbf{courses.json} : Maintient les structures des cours incluant leçons, quiz et métadonnées
-    \item \textbf{progress.json} : Suit le statut de complétion des étudiants et les scores aux quiz à des fins d'analyse
-\end{itemize}
-
-Chaque fichier de données est chargé en mémoire lors des opérations, puis réécrit sur le disque après modification. Cette approche garantit la cohérence des données et permet un accès rapide à l'information.
-
-\subsection{Description des Modules}
-
-\subsubsection{Module d'Authentification Central}
-Le module \texttt{authentification.py} implémente une authentification sécurisée avec :
-\begin{itemize}
-    \item Fonctionnalité de connexion avec limitation à trois tentatives maximales
-    \item Inscription avec validation de l'unicité de l'adresse e-mail et du nom d'utilisateur
-    \item Hachage sécurisé des mots de passe via l'algorithme SHA-256
-    \item Fonctionnalité de changement de mot de passe avec vérification
-\end{itemize}
-
-\subsubsection{Module de Gestion des Données}
-Le module \texttt{data.py} fournit des fonctions utilitaires pour :
-\begin{itemize}
-    \item Le chargement et la sauvegarde des fichiers JSON
-    \item La validation des noms d'utilisateur (3 à 20 caractères, alphanumériques avec tirets bas et tirets)
-    \item La validation des mots de passe (minimum 6 caractères)
-    \item La génération d'identifiants séquentiels uniques
-\end{itemize}
-
-\subsubsection{Modules Spécifiques aux Rôles}
-Chaque rôle utilisateur dispose d'un module dédié implémentant l'interface et la logique métier correspondantes :
-\begin{itemize}
-    \item \texttt{admin.py} : Opérations CRUD sur les utilisateurs et cours, génération de rapports statistiques
-    \item \texttt{enseignant.py} : Création et gestion des cours, suivi de la progression des étudiants
-    \item \texttt{etudiant.py} : Inscription aux cours, accès aux leçons, participation aux quiz
-\end{itemize}
-
-\subsection{Flux Utilisateur et Gestion des États}
-
-L'application implémente une boucle principale qui orchestre les interactions utilisateur :
-
-\begin{lstlisting}
-Menu Principal :
-    1. Connexion
-    2. Inscription
-    3. Quitter
+\begin{lstlisting}[caption=Logique de routing basée sur les rôles et calcul de progression]
+@login_required
+def dashboard(request):
+    user = request.user
+    if user.role == 'etudiant':
+        courses = Course.objects.filter(enrolled_students=user)
+        progress_data = []
+        for course in courses:
+            progress = Progress.objects.filter(student=user, course=course).first()
+            lesson_count = course.lessons.count()
+            completed_count = len(progress.completed_lessons) if progress else 0
+            
+            # Calcul du pourcentage d'avancement
+            percentage = int((completed_count / lesson_count * 100)) if lesson_count > 0 else 0
+            
+            progress_data.append({
+                'course': course, 'percentage': percentage, 'completed_count': completed_count
+            })
+        return render(request, 'core/etudiant_dashboard.html', {'progress_data': progress_data})
     
-Apres connexion, les utilisateurs sont diriges vers
-des menus specifiques a leur role.
+    elif user.role == 'enseignant':
+        courses = Course.objects.filter(teacher=user)
+        return render(request, 'core/enseignant_dashboard.html', {'courses': courses})
+    # ... Redirection vers vue admin
 \end{lstlisting}
 
-\subsection{Menus et Interfaces Console}
+\section{Intégration du Multimédia (Expressions Régulières)}
+Pour rendre les cours plus interactifs, l'enseignant peut fournir un simple lien YouTube. Une fonction Python dédiée utilisant la bibliothèque \texttt{re} (Regex) se charge de transformer cette URL utilisateur en une URL d'intégration iframe valide (embed).
 
-Cette section présente l'ensemble des interfaces de menu disponibles pour chaque type d'utilisateur.
+\begin{lstlisting}[caption=Extraction de l'ID YouTube par Regex]
+import re
 
-\subsubsection{Menu Principal (Authentification)}
-
-L'interface initiale affichée au démarrage de l'application :
-
-\begin{lstlisting}[language=text]
-=== Application E-Learning ===
-1. Se connecter
-2. S'inscrire
-3. Quitter
-
-Votre choix : 
+def get_youtube_embed_url(url):
+    if not url: return None
+    # Supporte divers formats : youtube.com/watch?v=ID, youtu.be/ID, etc.
+    youtube_regex = r'(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/(watch\?v=|embed/|v/|.+\?v=)?([^&=%\?]{11})'
+    match = re.match(youtube_regex, url)
+    if match:
+        video_id = match.group(6) # Le groupe 6 contient toujours les 11 caracteres de l'ID
+        return f"https://www.youtube.com/embed/{video_id}"
+    return None
 \end{lstlisting}
 
-Ce menu constitue le point d'entrée principal permettant à l'utilisateur de se connecter, de s'enregistrer ou de quitter l'application.
+\section{Le Pipeline Frontend : Tailwind CSS}
+Afin de concevoir une interface attrayante sans écrire des milliers de lignes de CSS brut, nous avons intégré Tailwind CSS, un framework utilitaire.
+La configuration requiert \texttt{npm} (Node Package Manager). Le fichier \texttt{tailwind.config.js} scrute nos templates Django pour générer uniquement le CSS nécessaire (minification), garantissant des temps de chargement ultra-rapides.
 
-\subsubsection{Menu Administrateur}
-
-Les administrateurs ont accès à un menu complet de gestion système :
-
-\begin{lstlisting}[language=text]
-===== MENU ADMINISTRATEUR =====
-1. Ajouter un utilisateur
-2. Supprimer un utilisateur
-3. Modifier les informations d'un utilisateur
-4. Consulter la liste des utilisateurs
-5. Rechercher un utilisateur
-6. Voir les statistiques
-7. Déconnexion
-
-Votre choix : 
+\begin{lstlisting}[language=JavaScript, caption=Configuration de Tailwind scrutant les templates Django]
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './core/templates/**/*.html',
+    './elearning_project/templates/**/*.html',
+  ],
+  theme: { extend: {} },
+  plugins: [],
+}
 \end{lstlisting}
 
-Ce menu permet aux administrateurs de gérer les comptes utilisateurs, visualiser les statistiques du système et superviser l'ensemble de la plateforme. Les opérations CRUD complètes sur les utilisateurs et les cours sont disponibles.
+\section{Conservation de l'Héritage : La passerelle CLI}
+Un aspect remarquable de notre implémentation est la conservation de l'ancienne logique textuelle de l'application. En utilisant le système de \textit{Management Commands} de Django, nous avons créé un pont. Exécuter \texttt{python manage.py runcli} charge l'environnement Django puis exécute l'ancien fichier \texttt{main.py}, permettant à l'administrateur de réaliser des actions d'urgence directement depuis le terminal.
 
-\subsubsection{Menu Enseignant}
+\vspace{0.5cm}
 
-Les enseignants disposent d'un menu dédié à la gestion pédagogique :
+\section*{Résumé du Chapitre}
 
-\begin{lstlisting}[language=text]
-=== Espace Enseignant ===
-1. Créer un cours
-2. Modifier un cours
-3. Supprimer un cours
-4. Gérer les quiz
-5. Gérer mes élèves
-6. Gérer mon profil
-7. Quitter
+Ce chapitre décrit la réalisation concrète de la plateforme. Il présente les technologies utilisées, notamment Python, Django, SQLite, HTML et Tailwind CSS. Il explique aussi l’implémentation des modèles, des vues, du calcul de progression, de l’intégration des vidéos YouTube et du pipeline frontend. Enfin, il montre comment l’ancienne version en ligne de commande a été conservée sous forme de commande Django, assurant une continuité entre l’ancienne et la nouvelle version du projet.
 
-Votre choix : 
-\end{lstlisting}
+\chapter{Sécurité, Validation et Interface UI}
 
-Ce menu permet aux enseignants de créer et gérer leurs cours, d'ajouter des leçons et des quiz, de suivre la progression des étudiants inscrits et de gérer leur profil personnel.
+La viabilité d'une plateforme web, en particulier dans le domaine de l'éducation, repose sur sa fiabilité, la disponibilité du service et la protection des données de ses utilisateurs.
 
-\subsubsection{Menu Étudiant}
-
-Les étudiants accèdent à un menu orienté vers l'apprentissage :
-
-\begin{lstlisting}[language=text]
-=== Espace Etudiant ===
-1. Inscription aux cours
-2. Visionnage des leçons
-3. Suivi de progression
-4. Passer des quiz
-5. Gérer mon profil
-6. Quitter
-
-Votre choix : 
-\end{lstlisting}
-
-Ce menu offre aux étudiants la possibilité de s'inscrire aux cours disponibles, de consulter les contenus pédagogiques, de suivre leur progression, de réaliser les évaluations et de gérer leur compte.
-
-\newpage
-
-\section{Sécurité et Gestion des Données}
-
-\subsection{Implémentation de la Sécurité}
-
-\subsubsection{Sécurité des Mots de Passe}
-La plateforme utilise le hachage SHA-256 pour le stockage sécurisé des mots de passe. Ceux-ci ne sont jamais stockés en clair ; à la place, leurs empreintes cryptographiques sont calculées et stockées. La vérification à la connexion consiste à hacher le mot de passe fourni et à le comparer avec l'empreinte stockée.
-
-\subsubsection{Validation des Entrées}
-Une validation complète des entrées est implémentée dans toute l'application :
+\section{Dispositifs de Sécurité (Sécurité intégrée dès la conception)}
+Le framework Django intègre nativement des protections contre le Top 10 des vulnérabilités de l'OWASP :
 \begin{itemize}
-    \item Les noms d'utilisateur doivent comporter entre 3 et 20 caractères et ne contenir que des caractères alphanumériques, des tirets bas et des tirets
-    \item Les mots de passe doivent comporter au moins 6 caractères
-    \item Les adresses e-mail sont vérifiées pour leur unicité
-    \item Les noms d'utilisateur sont vérifiés pour éviter les doublons
+    \item \textbf{Stockage Cryptographique :} Les mots de passe des utilisateurs ne sont jamais stockés en clair. Django utilise l'algorithme de dérivation de clé PBKDF2 avec un hachage SHA-256 et un sel cryptographique (salt) généré aléatoirement pour chaque utilisateur.
+    \item \textbf{Protection CSRF (Cross-Site Request Forgery) :} Chaque formulaire HTML généré sur notre site intègre un jeton unique via le tag \texttt{\{\% csrf\_token \%\}}. Cela empêche des sites tiers malveillants de soumettre des formulaires à la place de l'utilisateur connecté.
+    \item \textbf{Prévention XSS (Cross-Site Scripting) :} Le moteur de template de Django échappe automatiquement les variables affichées (les balises \texttt{<script>} insérées par un utilisateur malveillant sont rendues inoffensives en \texttt{\&lt;script\&gt;}).
+    \item \textbf{Contrôle d'Accès :} L'utilisation systématique du décorateur \texttt{@login\_required} protège les routes. La logique interne vérifie ensuite le rôle \texttt{user.role} avant d'accorder les droits de modification.
 \end{itemize}
 
-\subsubsection{Contrôle d'Accès Basé sur les Rôles}
-L'application implémente un contrôle d'accès basé sur les rôles au niveau du routage. Après authentification, les utilisateurs sont dirigés vers des menus ne contenant que les opérations appropriées à leur rôle :
+\section{Conception de l'Interface Utilisateur (UI/UX)}
+L'interface de l'application a été pensée pour minimiser la charge cognitive. En utilisant Tailwind CSS, nous avons créé un design épuré, dominé par des espaces blancs, des typographies lisibles et des codes couleurs intuitifs (Vert pour le succès, Bleu pour l'information).
 \begin{itemize}
-    \item \textbf{Administrateur} : Accès complet au système
-    \item \textbf{Enseignant} : Création et gestion des cours
-    \item \textbf{Étudiant} : Inscription aux cours et activités d'apprentissage
+    \item \textbf{Système de Cartes (Cards) :} Les cours sont présentés sous forme de grilles de cartes sur le dashboard, avec une barre de progression visuelle intégrée pour les étudiants.
+    \item \textbf{Navigation Cohérente :} Un système d'héritage de templates (\texttt{base.html}) garantit que la barre de navigation et le pied de page restent identiques à travers toute l'application.
+    \item \textbf{Adaptabilité (Responsivité) :} Grâce aux classes utilitaires de Tailwind telles que \texttt{md:grid-cols-2} ou \texttt{lg:grid-cols-3}, la disposition s'adapte dynamiquement si l'utilisateur est sur son téléphone ou sur un grand écran.
 \end{itemize}
 
-\subsection{Gestion des Erreurs et des Exceptions}
-
-L'application implémente une gestion robuste des erreurs :
-\begin{itemize}
-    \item Des blocs try-catch au niveau de la boucle principale empêchent les exceptions non gérées de terminer l'application
-    \item Les erreurs de désérialisation JSON sont gérées avec des structures de données vides par défaut
-    \item Les choix invalides de l'utilisateur sont interceptés et signalés avec des messages explicites
-    \item Les erreurs d'entrées/sorties fichiers sont gérées pour assurer la cohérence des données
-\end{itemize}
-
-\subsection{Stratégie de Persistance des Données}
-
-La persistance des données suit un schéma simple mais efficace :
-\begin{itemize}
-    \item Les données sont chargées depuis les fichiers JSON au début de chaque opération
-    \item Les modifications sont effectuées en mémoire
-    \item Les données mises à jour sont réécrites dans les fichiers après chaque changement
-    \item Cela garantit la cohérence finale et prévient la perte de données en cas de terminaison inattendue
-\end{itemize}
-
-\newpage
-
-\section{Développement et Perspectives}
-
-\subsection{Capacités Actuelles}
-
-La Plateforme E-Learning CLI fournit actuellement un système de gestion éducative pleinement fonctionnel, adapté à :
-\begin{itemize}
-    \item Les établissements éducatifs de petite et moyenne taille
-    \item Les programmes de formation et les initiatives d'apprentissage en entreprise
-    \item La recherche éducative et le prototypage
-    \item Les environnements de déploiement légers aux ressources limitées
-\end{itemize}
-
-\subsection{Points Forts de la Plateforme}
-
+\section{Validation et Protocole de Test}
+La validation du logiciel a suivi une approche manuelle rigoureuse :
 \begin{enumerate}
-    \item \textbf{Dépendances minimales} : Utilise uniquement la bibliothèque standard Python, réduisant la complexité du déploiement
-    \item \textbf{Conception modulaire} : La séparation claire des responsabilités facilite la maintenance et l'extension
-    \item \textbf{Architecture basée sur les rôles} : Modèle de permissions intuitif aligné sur les structures éducatives réelles
-    \item \textbf{Indépendance des données} : Le stockage basé sur des fichiers élimine les exigences de configuration de base de données
-    \item \textbf{Conscience sécuritaire} : Implémente le hachage des mots de passe et les bonnes pratiques de validation des entrées
-    \item \textbf{Convivialité} : L'interface à menus guides clairement les utilisateurs dans les opérations
+    \item \textbf{Tests d'Intégrité de Base :} Tentative de création de comptes avec des emails dupliqués (gestion de l'erreur \texttt{IntegrityError} dans la vue register).
+    \item \textbf{Tests de Flux (End-to-End) :} Simulation du parcours complet : Un enseignant crée un cours "Python 101" et un quiz. Un étudiant s'inscrit, valide 2 leçons sur 4 (vérification de la barre de progression à 50\%), passe le quiz et obtient son résultat.
+    \item \textbf{Tests de Cloisonnement :} Tentative d'accès forcé aux URLs d'administration (ex: \texttt{/course/create}) en étant connecté avec un profil étudiant, confirmant le blocage et la redirection.
 \end{enumerate}
 
-\subsection{Recommandations d'Amélioration}
+\section*{Résumé du Chapitre}
 
-\subsubsection{Améliorations à Court Terme}
+Ce chapitre met l’accent sur la sécurité, la validation et l’expérience utilisateur de la plateforme. Il présente les protections offertes par Django, comme le hachage des mots de passe, la protection CSRF, la prévention XSS et le contrôle d’accès selon les rôles. Il décrit également l’interface utilisateur, conçue avec Tailwind CSS pour être simple, claire et responsive. Enfin, il détaille les tests réalisés pour vérifier le bon fonctionnement du système, la progression des étudiants et la protection des accès sensibles.
+
+
+\chapter{Interface Utilisateur et Captures d'Écran}
+
+Cette section présente les différentes interfaces de la plateforme E-Learning, illustrant la mise en œuvre des principes d'ergonomie et de design discutés précédemment.
+
+\section{Authentification et Accueil}
+L'entrée sur la plateforme se fait via une page d'accueil claire, suivie des interfaces de connexion et d'inscription. Ces pages utilisent des formulaires épurés avec une validation en temps réel.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \IfFileExists{screenshot_login.png}{%
+            \includegraphics[width=\textwidth]{screenshot_login.png}
+        }{%
+            \begin{tcolorbox}[height=4cm, valign=center, halign=center, colback=gray!10] Connexion \end{tcolorbox}
+        }
+        \caption{Interface de Connexion}
+    \end{minipage}\hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \IfFileExists{screenshot_register.png}{%
+            \includegraphics[width=\textwidth]{screenshot_register.png}
+        }{%
+            \begin{tcolorbox}[height=4cm, valign=center, halign=center, colback=gray!10] Inscription \end{tcolorbox}
+        }
+        \caption{Interface d'Inscription}
+    \end{minipage}
+\end{figure}
+
+\section{Tableaux de Bord (Dashboards)}
+Chaque rôle (Étudiant, Enseignant, Administrateur) dispose d'une vue personnalisée offrant les indicateurs et actions les plus pertinents pour son usage.
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{screenshot_dashboard_student.png}{%
+        \includegraphics[width=0.85\textwidth]{screenshot_dashboard_student.png}
+    }{%
+        \begin{tcolorbox}[height=6cm, valign=center, halign=center, colback=gray!10] Dashboard Étudiant (Suivi de progression) \end{tcolorbox}
+    }
+    \caption{Tableau de bord de l'étudiant avec barres de progression}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{screenshot_dashboard_teacher.png}{%
+        \includegraphics[width=0.85\textwidth]{screenshot_dashboard_teacher.png}
+    }{%
+        \begin{tcolorbox}[height=6cm, valign=center, halign=center, colback=gray!10] Dashboard Enseignant (Gestion des cours) \end{tcolorbox}
+    }
+    \caption{Tableau de bord de l'enseignant listant ses cours créés}
+\end{figure}
+
+\section{Consultation et Évaluation}
+L'interface de lecture des leçons intègre le lecteur vidéo YouTube et les contenus textuels, tandis que l'interface de quiz permet une évaluation interactive.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \IfFileExists{screenshot_lesson.png}{%
+            \includegraphics[width=\textwidth]{screenshot_lesson.png}
+        }{%
+            \begin{tcolorbox}[height=4cm, valign=center, halign=center, colback=gray!10] Détail de Leçon (Vidéo) \end{tcolorbox}
+        }
+        \caption{Vue d'une leçon avec vidéo intégrée}
+    \end{minipage}\hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \IfFileExists{screenshot_quiz.png}{%
+            \includegraphics[width=\textwidth]{screenshot_quiz.png}
+        }{%
+            \begin{tcolorbox}[height=4cm, valign=center, halign=center, colback=gray!10] Interface Quiz \end{tcolorbox}
+        }
+        \caption{Passage d'un questionnaire à choix multiples}
+    \end{minipage}
+\end{figure}
+
+\section*{Résumé du Chapitre}
+
+Ce chapitre illustre l'aspect visuel de la plateforme à travers des captures d'écran des modules clés. Il démontre la cohérence graphique entre les différentes sections (authentification, tableaux de bord et espaces d'apprentissage) ainsi que l'intégration réussie des fonctionnalités métier dans une interface moderne et intuitive.
+
+
+\chapter*{Conclusion Générale et Perspectives}
+\addcontentsline{toc}{chapter}{Conclusion Générale et Perspectives}
+
+Le projet "Plateforme E-Learning Web" a représenté un défi technique stimulant et hautement formateur. La migration d'une interface en ligne de commande basique vers une architecture web complète basée sur le framework Django et le design système Tailwind CSS constitue un succès. 
+
+Ce travail nous a permis de mettre en pratique des concepts d'ingénierie logicielle avancés : la modélisation de bases de données relationnelles avec SQLite, l'implémentation du pattern architectural MVT, la sécurisation des échanges de données (Authentification, CSRF) et la création d'expériences utilisateurs (UX) réactives et intuitives. La plateforme résultante est un produit fonctionnel, sécurisé, et capable de gérer l'interaction entre l'administration du contenu par les enseignants et la consommation pédagogique par les étudiants.
+
+\section*{Perspectives d'Évolution}
+L'architecture modulaire de Django offre un terreau fertile pour de futures évolutions du système. Plusieurs axes d'amélioration ont été identifiés pour enrichir l'expérience d'apprentissage :
 \begin{itemize}
-    \item Implémenter un support de base de données (SQLite, PostgreSQL) pour une meilleure scalabilité
-    \item Ajouter une fonctionnalité de journalisation pour suivre les événements système et les actions utilisateurs
-    \item Renforcer la validation des entrées avec des expressions régulières
-    \item Implémenter des mécanismes de sauvegarde et de récupération des données
+    \item \textbf{API REST et application mobile :} Exposer les données via Django REST Framework (DRF) afin de faciliter le développement d'une application mobile compagnon, par exemple avec Flutter ou React Native.
+    \item \textbf{Communication en Temps Réel :} Intégration de Django Channels (WebSockets) pour implémenter un chat en direct entre les étudiants d'un même cours ou avec l'enseignant.
+    \item \textbf{Gamification :} Ajout d'un système de badges, de certificats PDF auto-générés et d'un classement (Leaderboard) pour stimuler l'engagement des apprenants.
+    \item \textbf{Monétisation :} Intégration de passerelles de paiement (ex: Stripe API) pour permettre aux enseignants de commercialiser des cours premium.
 \end{itemize}
 
-\subsubsection{Améliorations à Moyen Terme}
-\begin{itemize}
-    \item Développer une interface web avec Flask ou Django
-    \item Implémenter des notifications par e-mail pour les cours et annonces
-    \item Ajouter le support multimédia pour des contenus de cours enrichis
-    \item Intégrer des tableaux de bord d'analyse et de reporting des évaluations
-\end{itemize}
+\newpage
+\chapter*{Bibliographie et Webographie}
+\addcontentsline{toc}{chapter}{Bibliographie et Webographie}
 
-\subsubsection{Améliorations Stratégiques à Long Terme}
-\begin{itemize}
-    \item Migrer vers une architecture microservices pour une meilleure scalabilité
-    \item Implémenter une passerelle API pour les intégrations tierces
-    \item Ajouter des capacités d'apprentissage automatique pour des recommandations d'apprentissage personnalisées
-    \item Développer des applications mobiles pour une accessibilité élargie
-\end{itemize}
-
-\subsection{Qualité du Code et Maintenance}
-
-La base de code démontre de bonnes pratiques, notamment :
-\begin{itemize}
-    \item Des conventions de nommage claires (mélange approprié de français et d'anglais)
-    \item Une décomposition logique des fonctions
-    \item Des messages d'erreur cohérents pour les utilisateurs
-    \item La validation des entrées aux couches limites
-\end{itemize}
-
-Recommandations d'amélioration :
-\begin{itemize}
-    \item Ajouter des docstrings complètes à toutes les fonctions
-    \item Implémenter des tests unitaires pour assurer la fiabilité du code
-    \item Utiliser les annotations de type pour une meilleure clarté du code
-    \item Créer un fichier de configuration pour les paramètres système
-\end{itemize}
-
-\section{Conclusion}
-
-La Plateforme E-Learning CLI représente une solution technologique éducative bien structurée, qui parvient à équilibrer simplicité et fonctionnalité. En exploitant la bibliothèque standard Python et en implémentant une architecture modulaire basée sur les rôles, la plateforme offre un système de gestion éducative accessible et maintenable.
-
-Les mesures de sécurité mises en œuvre, notamment le hachage des mots de passe et la validation des entrées, témoignent d'une approche de développement soucieuse de la sécurité. Le modèle de contrôle d'accès basé sur les rôles s'aligne sur les hiérarchies éducatives réelles, rendant le système intuitif pour des groupes d'utilisateurs variés.
-
-Grâce à ses exigences minimales en matière de déploiement et à son code source clair, la plateforme constitue une excellente base pour les initiatives éducatives. Les améliorations futures devraient se concentrer sur le renforcement de la scalabilité, l'extension des interfaces utilisateurs et l'intégration d'analyses avancées, tout en préservant la simplicité qui rend le système actuel accessible.
-
-Ce projet illustre l'application efficace des principes d'ingénierie logicielle et constitue une base solide pour des développements ultérieurs. Les organisations à la recherche d'une solution légère de gestion éducative trouveront cette plateforme immédiatement utilisable, tandis que les développeurs pourront s'en servir comme référence ou point de départ pour des systèmes e-learning plus complexes.
+\begin{enumerate}
+    \item \textbf{Django Software Foundation.} \textit{Django Documentation - Version 6.0}. Disponible sur : \url{https://docs.djangoproject.com/en/6.0/}
+    \item \textbf{Tailwind Labs.} \textit{Tailwind CSS Documentation - Utility-First Fundamentals}. Disponible sur : \url{https://tailwindcss.com/docs}
+    \item \textbf{OWASP.} \textit{Top 10 Web Application Security Risks}. Disponible sur : \url{https://owasp.org/www-project-top-ten/}
+    \item \textbf{Python Software Foundation.} \textit{The Python Standard Library (re, sys, os)}. Disponible sur : \url{https://docs.python.org/3/library/}
+    \item \textbf{Greenfeld, A. R. \& Greenfeld, D. R.} \textit{Two Scoops of Django 3.x : Best Practices for the Django Web Framework}. Two Scoops Press.
+\end{enumerate}
 
 \end{document}

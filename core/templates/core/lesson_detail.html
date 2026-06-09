@@ -16,9 +16,27 @@
         
         <h1 class="text-4xl font-black text-gray-900 tracking-tight mb-8">{{ lesson.title }}</h1>
         
+        {% if embed_url %}
+            <div class="mb-10 aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-gray-900">
+                <iframe class="w-full h-full" src="{{ embed_url }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        {% endif %}
+
         <div class="prose prose-red max-w-none text-gray-600 leading-relaxed mb-16">
             {{ lesson.content|linebreaks }}
         </div>
+
+        {% if lesson.materials_url %}
+            <div class="mb-16 p-6 bg-red-50 rounded-3xl border-2 border-dashed border-red-200 flex items-center justify-between">
+                <div>
+                    <h3 class="font-black text-red-600 uppercase tracking-widest text-xs mb-1">Supports de cours</h3>
+                    <p class="text-gray-600 text-sm font-medium">Téléchargez les ressources complémentaires</p>
+                </div>
+                <a href="{{ lesson.materials_url }}" target="_blank" class="bg-red-600 text-white px-6 py-3 rounded-2xl font-black text-sm hover:bg-red-700 transition-all shadow-md">
+                    Accéder aux supports
+                </a>
+            </div>
+        {% endif %}
         
         <div class="border-t border-gray-100 pt-10 flex justify-between items-center">
             <div></div>

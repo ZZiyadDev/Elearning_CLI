@@ -116,6 +116,23 @@ def enroll_course(request, pk):
     return redirect('course_detail', pk=pk)
 
 
+import re
+
+def get_youtube_embed_url(url):
+    if not url:
+        return None
+    # Support various YouTube URL formats
+    youtube_regex = (
+        r'(https?://)?(www\.)?'
+        '(youtube|youtu|youtube-nocookie)\.(com|be)/'
+        '(watch\?v=|embed/|v/|.+\?v=)?([^&=%\?]{11})'
+    )
+    match = re.match(youtube_regex, url)
+    if match:
+        video_id = match.group(6)
+        return f"https://www.youtube.com/embed/{video_id}"
+    return None
+
 @login_required
 def lesson_detail(request, course_pk, lesson_id):
     course = get_object_or_404(Course, pk=course_pk)
@@ -130,10 +147,13 @@ def lesson_detail(request, course_pk, lesson_id):
             
     next_lesson = Lesson.objects.filter(course=course, lesson_id__gt=lesson_id).order_by('lesson_id').first()
     
+    embed_url = get_youtube_embed_url(lesson.video_url)
+    
     return render(request, 'core/lesson_detail.html', {
         'course': course,
         'lesson': lesson,
-        'next_lesson': next_lesson
+        'next_lesson': next_lesson,
+        'embed_url': embed_url
     })
 
 
@@ -195,8 +215,17 @@ def add_lesson(request, pk):
     if request.method == 'POST':
         title = request.POST['title']
         content = request.POST['content']
+        video_url = request.POST.get('video_url', '')
+        materials_url = request.POST.get('materials_url', '')
         lesson_id = course.lessons.count() + 1
-        Lesson.objects.create(course=course, lesson_id=lesson_id, title=title, content=content)
+        Lesson.objects.create(
+            course=course, 
+            lesson_id=lesson_id, 
+            title=title, 
+            content=content,
+            video_url=video_url,
+            materials_url=materials_url
+        )
         return redirect('course_detail', pk=course.pk)
     
     return render(request, 'core/add_lesson.html', {'course': course})

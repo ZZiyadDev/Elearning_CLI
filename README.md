@@ -1,88 +1,54 @@
-# E-Learning CLI Application
+# Plateforme E-Learning EMSI (Web)
 
-A command-line interface application for managing an e-learning platform with role-based access for students, teachers, and administrators.
+Une plateforme moderne d'apprentissage en ligne développée avec **Django** et **Tailwind CSS**. Ce projet est l'évolution de l'application CLI initiale vers une architecture web complète.
 
-## Features
+## 🚀 Installation Rapide
 
-### For Students
+Pour configurer automatiquement le projet (base de données, migrations, compte admin) :
 
-- **Course Enrollment**: Browse and enroll in available courses
-- **Lesson Viewing**: Access course content and mark lessons as completed
-- **Progress Tracking**: Monitor completion status and quiz scores
-- **Quiz System**: Take quizzes to test knowledge
-- **Profile Management**: Change password and view account information
+1. Assurez-vous d'avoir Python installé.
+2. Ouvrez un terminal dans le dossier du projet.
+3. Exécutez le script de configuration :
+   ```bash
+   python setup_project.py
+   ```
 
-### For Teachers
+## 🛠️ Configuration Manuelle
 
-- **Course Creation**: Create new courses with lessons and quizzes
-- **Course Management**: Edit course titles, add/modify/delete lessons
-- **Student Monitoring**: View student enrollment and progress
-- **Profile Management**: Change password and view account information
+Si vous préférez configurer étape par étape :
 
-### For Administrators
-
-- **User Management**: List, delete, and change user roles
-- **Course Oversight**: View and delete courses
-- **System Statistics**: Monitor platform usage and completion rates
-
-## Installation
-
-1. Ensure Python 3.6+ is installed
-2. Clone or download the project files
-3. No additional dependencies required (uses only standard library)
-
-## Usage
-
-Run the application:
-
+### 1. Environnement Python
 ```bash
-python main.py
+pip install -r requirements.txt
+python manage.py makemigrations core
+python manage.py migrate
 ```
 
-### User Roles
+### 2. Frontend (Tailwind CSS)
+Le projet utilise Node.js pour compiler le CSS.
+```bash
+npm install
+npm run build
+```
 
-- **Student**: Focus on learning and progress tracking
-- **Teacher**: Create and manage educational content
-- **Admin**: System administration and oversight
+### 3. Lancement
+```bash
+python manage.py runserver
+```
 
-### Data Files
+## 👥 Comptes de Test
 
-- `users.json`: User accounts and roles
-- `courses.json`: Course content, lessons, and quizzes
-- `progress.json`: Student progress and quiz scores
+Le script `setup_project.py` crée un compte administrateur par défaut :
+- **Username :** `admin`
+- **Password :** `adminpassword`
 
-## Security Features
+## 🏗️ Architecture (MVT)
 
-- Password hashing using SHA-256
-- Input validation and sanitization
-- Role-based access control
-- Secure password change functionality
+- **Modèles :** Gérés dans `core/models.py` (Utilisateurs personnalisés, Cours, Leçons, Quiz, Progress).
+- **Vues :** Logique métier dans `core/views.py`.
+- **Templates :** Interfaces HTML dans `core/templates/core/`.
+- **Styles :** Design moderne avec Tailwind CSS (thème rouge minimalist).
 
-## Development
+## 📄 Documentation
 
-### Code Structure
-
-- `main.py`: Application entry point and menu routing
-- `authentification.py`: Login, registration, and password management
-- `etudiant.py`: Student interface and functionality
-- `enseignant.py`: Teacher interface and functionality
-- `admin.py`: Administrator interface and functionality
-- `data.py`: Data loading, saving, and validation utilities
-
-### Adding New Features
-
-1. Update data structures in JSON files as needed
-2. Add functionality to appropriate role module
-3. Update menus and routing in `main.py`
-4. Add validation in `data.py` if required
-
-## Contributing
-
-1. Follow the existing code structure
-2. Add proper error handling
-3. Update documentation
-4. Test thoroughly before committing
-
-## License
-
-This project is open source. Feel free to use and modify as needed.
+Le rapport technique complet se trouve dans le fichier `Elearning_CLI_Report.tex`.

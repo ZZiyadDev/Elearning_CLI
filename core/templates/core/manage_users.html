@@ -1,0 +1,62 @@
+{% extends 'core/base.html' %}
+{% block title %}Gestion des utilisateurs{% endblock %}
+{% block content %}
+<div class="mb-12">
+    <a href="{% url 'dashboard' %}" class="text-sm font-black text-gray-400 hover:text-red-600 transition-colors uppercase tracking-widest flex items-center space-x-2 mb-4">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        <span>Retour au dashboard</span>
+    </a>
+    <h1 class="text-4xl font-black text-gray-900 tracking-tight">Gestion des utilisateurs</h1>
+    <p class="text-gray-500 mt-2 font-medium">Modifiez les rôles des utilisateurs de la plateforme.</p>
+</div>
+
+<div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+    <table class="w-full text-left border-collapse">
+        <thead>
+            <tr class="bg-gray-50 border-b border-gray-100">
+                <th class="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Utilisateur</th>
+                <th class="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Email</th>
+                <th class="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Rôle actuel</th>
+                <th class="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Action</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+            {% for u in users %}
+            <tr class="hover:bg-gray-50/50 transition-colors">
+                <td class="px-8 py-6">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-black">
+                            {{ u.username|first|upper }}
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-900">{{ u.nom }}</p>
+                            <p class="text-sm text-gray-400">@{{ u.username }}</p>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-8 py-6 text-gray-600 font-medium">{{ u.email }}</td>
+                <td class="px-8 py-6">
+                    <span class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest 
+                        {% if u.role == 'admin' %}bg-purple-50 text-purple-600{% elif u.role == 'enseignant' %}bg-blue-50 text-blue-600{% else %}bg-green-50 text-green-600{% endif %}">
+                        {{ u.role }}
+                    </span>
+                </td>
+                <td class="px-8 py-6">
+                    <form action="{% url 'change_role' u.id %}" method="POST" class="flex items-center space-x-2">
+                        {% csrf_token %}
+                        <select name="role" class="bg-gray-50 border-none rounded-xl px-4 py-2 text-sm font-bold focus:ring-2 focus:ring-red-500 outline-none">
+                            <option value="etudiant" {% if u.role == 'etudiant' %}selected{% endif %}>Étudiant</option>
+                            <option value="enseignant" {% if u.role == 'enseignant' %}selected{% endif %}>Enseignant</option>
+                            <option value="admin" {% if u.role == 'admin' %}selected{% endif %}>Admin</option>
+                        </select>
+                        <button type="submit" class="bg-gray-900 text-white p-2 rounded-xl hover:bg-red-600 transition-all shadow-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

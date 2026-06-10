@@ -121,16 +121,15 @@ import re
 def get_youtube_embed_url(url):
     if not url:
         return None
-    # Support various YouTube URL formats
-    youtube_regex = (
-        r'(https?://)?(www\.)?'
-        '(youtube|youtu|youtube-nocookie)\.(com|be)/'
-        '(watch\?v=|embed/|v/|.+\?v=)?([^&=%\?]{11})'
-    )
-    match = re.match(youtube_regex, url)
+    # Support various YouTube URL formats (watch, embed, shorts, youtu.be)
+    # Using a robust regex to capture the 11-character video ID
+    youtube_regex = r'(?:v=|/v/|/embed/|/shorts/|youtu\.be/|/watch\?v=|&v=|/\?v=)([\w-]{11})'
+    
+    match = re.search(youtube_regex, url)
     if match:
-        video_id = match.group(6)
-        return f"https://www.youtube.com/embed/{video_id}"
+        video_id = match.group(1)
+        # Use standard youtube.com and add basic parameters for compatibility
+        return f"https://www.youtube.com/embed/{video_id}?rel=0&enablejsapi=1"
     return None
 
 @login_required
@@ -204,6 +203,29 @@ def create_course(request):
         return redirect('course_detail', pk=course.pk)
     
     return render(request, 'core/create_course.html')
+
+
+@login_required
+def manage_users(request):
+    if request.user.role != 'admin':
+        return redirect('dashboard')
+    users = Utilisateur.objects.all().order_by('username')
+    return render(request, 'core/manage_users.html', {'users': users})
+
+
+@login_required
+def change_role(request, user_id):
+    if request.user.role != 'admin':
+        return redirect('dashboard')
+    
+    user_to_change = get_object_or_404(Utilisateur, id=user_id)
+    if request.method == 'POST':
+        new_role = request.POST.get('role')
+        if new_role in ['etudiant', 'enseignant', 'admin']:
+            user_to_change.role = new_role
+            user_to_change.save()
+            
+    return redirect('manage_users')
 
 
 @login_required

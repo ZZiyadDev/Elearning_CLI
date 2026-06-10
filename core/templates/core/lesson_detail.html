@@ -18,7 +18,13 @@
         
         {% if embed_url %}
             <div class="mb-10 aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-gray-900">
-                <iframe class="w-full h-full" src="{{ embed_url }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe 
+                    class="w-full h-full" 
+                    src="{{ embed_url }}" 
+                    allow="autoplay; encrypted-media; picture-in-picture" 
+                    allowfullscreen
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
             </div>
         {% endif %}
 
